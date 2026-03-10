@@ -86,8 +86,6 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 			
 			if x > 1 and z > 1:
 				#if Vector3.UP.dot(chunk_data.normals[x*(size+3)+z]) > 0.8 and x%2 == 0 and z%2 == 0 and chunk_data.vertexes[x*(size+3)+z].y > world_data.water_level+5.0:
-					#var transform: Transform3D = Transform3D(Basis() * Basis(Vector3.UP, randf_range(0, 2*PI)), chunk_data.vertexes[x*(size+3)+z])
-					#chunk_data.grass.set_instance_transform((x-2)*size+(z-2), transform)
 					#var tree = tree_scn.instantiate()
 					#tree.position = vertexes[x*(size+3)+z] + Vector3(randf_range(0.0,0.7), 0.0, randf_range(0.0,0.7))
 					#vegetation.call_deferred("add_child", tree)
