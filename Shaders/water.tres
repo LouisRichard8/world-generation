@@ -1,0 +1,119 @@
+[gd_resource type="VisualShader" load_steps=13 format=3 uid="uid://c5jemryy2bk6l"]
+
+[ext_resource type="Texture2D" uid="uid://kvt58n7tf3lc" path="res://Textures/Water/Water_001_COLOR.jpg" id="1_famow"]
+[ext_resource type="Texture2D" uid="uid://dh1pdvn0u6nxj" path="res://Textures/Water/Water_001_NORM.jpg" id="2_0bu5e"]
+[ext_resource type="Texture2D" uid="uid://can3wuenh74xr" path="res://Textures/Water/Water_001_SPEC.jpg" id="3_f2nf8"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_77b6f"]
+input_name = "time"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_ifbfo"]
+texture = ExtResource("1_famow")
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_c3gq2"]
+texture = ExtResource("2_0bu5e")
+texture_type = 2
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_arr31"]
+texture = ExtResource("3_f2nf8")
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_ldq7c"]
+parameter_name = "Water_Color"
+default_value_enabled = true
+default_value = Color(0.101718, 0.368618, 0.999991, 1)
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_6k360"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0, 0, 0, 0)]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_syrx3"]
+parameter_name = "Transparency"
+default_value_enabled = true
+default_value = 0.8
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_71a3o"]
+parameter_name = "Roughness"
+default_value_enabled = true
+default_value = 0.2
+
+[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_t7ute"]
+default_input_values = [1, Vector2(0.05, 0.05), 2, Vector2(0, 0)]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform vec4 Water_Color : source_color = vec4(0.101718, 0.368618, 0.999991, 1.000000);
+uniform sampler2D tex_frg_2 : source_color;
+uniform float Transparency = 0.80000001192093;
+uniform float Roughness = 0.20000000298023;
+uniform sampler2D tex_frg_4;
+uniform sampler2D tex_frg_3 : hint_normal;
+
+
+
+void fragment() {
+// ColorParameter:5
+	vec4 n_out5p0 = Water_Color;
+
+
+// UVFunc:9
+	vec2 n_in9p1 = vec2(0.05000, 0.05000);
+	vec2 n_in9p2 = vec2(0.00000, 0.00000);
+	vec2 n_out9p0 = n_in9p2 * n_in9p1 + UV;
+
+
+// Texture2D:2
+	vec4 n_out2p0 = texture(tex_frg_2, n_out9p0);
+
+
+// VectorOp:6
+	vec4 n_out6p0 = n_out5p0 + n_out2p0;
+
+
+// FloatParameter:7
+	float n_out7p0 = Transparency;
+
+
+// FloatParameter:8
+	float n_out8p0 = Roughness;
+
+
+// Texture2D:4
+	vec4 n_out4p0 = texture(tex_frg_4, UV);
+
+
+// Texture2D:3
+	vec4 n_out3p0 = texture(tex_frg_3, n_out9p0);
+
+
+// Output:0
+	ALBEDO = vec3(n_out6p0.xyz);
+	ALPHA = n_out7p0;
+	ROUGHNESS = n_out8p0;
+	SPECULAR = n_out4p0.x;
+	NORMAL_MAP = vec3(n_out3p0.xyz);
+
+
+}
+"
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_ifbfo")
+nodes/fragment/2/position = Vector2(-520, -100)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_c3gq2")
+nodes/fragment/3/position = Vector2(-520, 220)
+nodes/fragment/4/node = SubResource("VisualShaderNodeTexture_arr31")
+nodes/fragment/4/position = Vector2(-480, 720)
+nodes/fragment/5/node = SubResource("VisualShaderNodeColorParameter_ldq7c")
+nodes/fragment/5/position = Vector2(-500, -340)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVectorOp_6k360")
+nodes/fragment/6/position = Vector2(20, -60)
+nodes/fragment/7/node = SubResource("VisualShaderNodeFloatParameter_syrx3")
+nodes/fragment/7/position = Vector2(-60, 160)
+nodes/fragment/8/node = SubResource("VisualShaderNodeFloatParameter_71a3o")
+nodes/fragment/8/position = Vector2(-60, 400)
+nodes/fragment/9/node = SubResource("VisualShaderNodeUVFunc_t7ute")
+nodes/fragment/9/position = Vector2(-940, 20)
+nodes/fragment/10/node = SubResource("VisualShaderNodeInput_77b6f")
+nodes/fragment/10/position = Vector2(-1240, 120)
+nodes/fragment/connections = PackedInt32Array(5, 0, 6, 0, 2, 0, 6, 1, 6, 0, 0, 0, 7, 0, 0, 1, 8, 0, 0, 3, 9, 0, 2, 0, 3, 0, 0, 9, 9, 0, 3, 0, 4, 0, 0, 4)

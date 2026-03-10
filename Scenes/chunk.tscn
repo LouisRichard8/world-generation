@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://bcda6ht4rqbp0"]
+
+[ext_resource type="Script" uid="uid://dhmhvgam6ap6c" path="res://Scripts/chunk.gd" id="1_kdh3y"]
+[ext_resource type="Shader" uid="uid://8bmsx7qmpv54" path="res://Shaders/chunk.tres" id="2_eat54"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eat54"]
+render_priority = 0
+shader = ExtResource("2_eat54")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bp61h"]
+albedo_color = Color(0.267266, 0.261851, 0.999992, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_eat54"]
+material = SubResource("StandardMaterial3D_bp61h")
+size = Vector2(1, 1)
+
+[node name="Chunk" type="StaticBody3D"]
+script = ExtResource("1_kdh3y")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 200, 0)
+visible = false
+pixel_size = 0.04
+text = "Test"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_eat54")
+
+[node name="Water" type="MeshInstance3D" parent="."]
+process_mode = 4
+visible = false
+mesh = SubResource("PlaneMesh_eat54")
+
+[node name="Vegetation" type="Node3D" parent="."]
+
+[node name="Grass" type="MultiMeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0

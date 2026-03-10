@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://ck4fkp88gwd43"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vkxxa"]
+
+[sub_resource type="Sky" id="Sky_kroqa"]
+sky_material = SubResource("ProceduralSkyMaterial_vkxxa")
+
+[sub_resource type="Environment" id="Environment_eaaao"]
+background_mode = 2
+sky = SubResource("Sky_kroqa")
+
+[sub_resource type="SphereMesh" id="SphereMesh_hy3ix"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_yab1b"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kroqa"]
+albedo_color = Color(0.381824, 0.640593, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_eaaao"]
+material = SubResource("StandardMaterial3D_kroqa")
+size = Vector2(10, 10)
+
+[node name="WorldEnvironment" type="WorldEnvironment"]
+environment = SubResource("Environment_eaaao")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="Sun" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
+mesh = SubResource("SphereMesh_hy3ix")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D/Sun"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Moon" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+mesh = SubResource("SphereMesh_yab1b")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D/Moon"]
+light_energy = 0.5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_eaaao")

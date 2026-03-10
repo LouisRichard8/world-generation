@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Biome" load_steps=2 format=3 uid="uid://bcly2nte8o6k5"]
+
+[ext_resource type="Script" uid="uid://bdqb5aohk8k2s" path="res://Scripts/biome.gd" id="1_t0dcg"]
+
+[resource]
+script = ExtResource("1_t0dcg")
+color = Color(1, 1, 1, 1)
+temperature = 0.3
+humidity = 0.4
+metadata/_custom_type_script = "uid://bdqb5aohk8k2s"
