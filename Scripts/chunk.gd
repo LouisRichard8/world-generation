@@ -85,6 +85,12 @@ func generate_mesh(surface_tool: SurfaceTool):
 	shapes[lod_level] = shape
 	
 	update_lod(lod_level)
+	
+	if lod_level < 2 and chunk_data.grass.instance_count == 0:
+		var thread: Callable = World.chunck_generator.generate_grass
+		thread = thread.bind(chunk_data)
+		thread_id = WorkerThreadPool.add_task(thread)
+		
 	loaded = true
 
 func generate_water():

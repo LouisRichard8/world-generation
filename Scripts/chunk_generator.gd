@@ -21,9 +21,6 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	
 	if !chunk_data.vertexes_generated:
 		var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
-		var stepGrass: float = stepBetweenPoint/world_data.grass_density
-		chunk_data.grass.instance_count = (world_data.grass_density**2)*(size**2)
-		var grass_index = 0
 		for x in range(chunk_res+5): 
 			for z in range(chunk_res+5):
 				var real_x = x*stepBetweenPoint - stepBetweenPoint
@@ -41,41 +38,7 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 				
 				if x > 0 and z > 0:
 					calculate_normal(chunk_data, x, z)
-					
-				if x > 2 and z > 2:
-					var indexA = (x-2)*(chunk_res+5)+z-2
-					var indexB = (x-2)*(chunk_res+5)+z-1
-					var indexC = (x-1)*(chunk_res+5)+z-2
-					var indexD = (x-1)*(chunk_res+5)+z-1
-					var AB_vert = chunk_data.vertexes[indexB]-chunk_data.vertexes[indexA]
-					var BD_vert = chunk_data.vertexes[indexD]-chunk_data.vertexes[indexB]
-					var CD_vert = chunk_data.vertexes[indexD]-chunk_data.vertexes[indexC]
-					var AC_vert = chunk_data.vertexes[indexC]-chunk_data.vertexes[indexA]
-					var AB_norm = chunk_data.normals[indexB]-chunk_data.normals[indexA]
-					var BD_norm = chunk_data.normals[indexD]-chunk_data.normals[indexB]
-					var CD_norm = chunk_data.normals[indexD]-chunk_data.normals[indexC]
-					var AC_norm = chunk_data.normals[indexC]-chunk_data.normals[indexA]
-					for i in range(world_data.grass_density):
-						for j in range(world_data.grass_density):
-							var pos: Vector3 = chunk_data.vertexes[indexA]
-							var normal: Vector3 = chunk_data.normals[indexA]
-							
-							var x_percent := float(i+stepGrass/2.0)/float(world_data.grass_density)
-							var z_percent := float(j+stepGrass/2.0)/float(world_data.grass_density)
-							
-							if j >= i:
-								pos += AB_vert*x_percent + BD_vert*z_percent
-								normal += AB_norm*x_percent + BD_norm*z_percent
-							else:
-								pos += CD_vert*x_percent + AC_vert*z_percent
-								normal += CD_norm*x_percent + AC_norm*z_percent
-							
-							if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
-								var transform: Transform3D = Transform3D(Basis() * Basis(Vector3.UP, randf_range(0, 2*PI)), pos)
-								chunk_data.grass.set_instance_transform(grass_index, transform)
-								grass_index+=1
-							
-		chunk_data.grass.visible_instance_count = grass_index
+		
 		chunk_data.vertexes_generated = true
 
 	var quadNumber: int = max(chunk_res/pow(2,lod_level),4.0)
@@ -126,7 +89,6 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 					add_vertex(surface_tool, chunk_data, indexA)
 					add_vertex(surface_tool, chunk_data, indexC)
 					add_vertex(surface_tool, chunk_data, indexD)
-
 
 func add_vertex(surface_tool: SurfaceTool, chunk_data: ChunkData, index: int):
 	surface_tool.set_normal(chunk_data.normals[index])
@@ -190,3 +152,50 @@ func get_biome(x: float, z: float) -> Color:
 	color = color.normalized()
 	
 	return Color(color.x, color.y, color.z, 1.0)
+
+func generate_grass(chunk_data: ChunkData):
+	var chunk_size := chunk_data.chunk_size
+	var chunk_res := chunk_data.chunk_res
+	var size: int = chunk_res+2
+	
+	var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
+	var stepGrass: float = stepBetweenPoint/world_data.grass_density
+	
+	chunk_data.grass.instance_count = (world_data.grass_density**2)*(size**2)
+	var grass_index = 0
+	
+	for x in range(3, chunk_res+5): 
+		for z in range(3, chunk_res+5):
+			var indexA = (x-2)*(chunk_res+5)+z-2
+			var indexB = (x-2)*(chunk_res+5)+z-1
+			var indexC = (x-1)*(chunk_res+5)+z-2
+			var indexD = (x-1)*(chunk_res+5)+z-1
+			var AB_vert = chunk_data.vertexes[indexB]-chunk_data.vertexes[indexA]
+			var BD_vert = chunk_data.vertexes[indexD]-chunk_data.vertexes[indexB]
+			var CD_vert = chunk_data.vertexes[indexD]-chunk_data.vertexes[indexC]
+			var AC_vert = chunk_data.vertexes[indexC]-chunk_data.vertexes[indexA]
+			var AB_norm = chunk_data.normals[indexB]-chunk_data.normals[indexA]
+			var BD_norm = chunk_data.normals[indexD]-chunk_data.normals[indexB]
+			var CD_norm = chunk_data.normals[indexD]-chunk_data.normals[indexC]
+			var AC_norm = chunk_data.normals[indexC]-chunk_data.normals[indexA]
+			for i in range(world_data.grass_density):
+				for j in range(world_data.grass_density):
+					var pos: Vector3 = chunk_data.vertexes[indexA]
+					var normal: Vector3 = chunk_data.normals[indexA]
+					
+					var x_percent := float(i+stepGrass/2.0)/float(world_data.grass_density)
+					var z_percent := float(j+stepGrass/2.0)/float(world_data.grass_density)
+					
+					if j >= i:
+						pos += AB_vert*x_percent + BD_vert*z_percent
+						normal += AB_norm*x_percent + BD_norm*z_percent
+					else:
+						pos += CD_vert*x_percent + AC_vert*z_percent
+						normal += CD_norm*x_percent + AC_norm*z_percent
+					
+					if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
+						var transform: Transform3D = Transform3D(Basis() * Basis(Vector3.UP, randf_range(0, 2*PI)), pos)
+						chunk_data.grass.set_instance_transform(grass_index, transform)
+						grass_index+=1
+						
+	chunk_data.grass.visible_instance_count = grass_index
