@@ -1,7 +1,7 @@
 extends Node3D
 class_name Chunk
 
-const chunk_scn = preload("res://Scenes/chunk.tscn")
+const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
 
 @onready var label_3d: Label3D = $Label3D
 @onready var mesh: MeshInstance3D = $MeshInstance3D
@@ -27,7 +27,7 @@ var thread_canceled: bool = false
 var thread_id: int = 0
 
 static func new_chunk(pos: Vector3, size: int, level: int, res: int) -> Chunk:
-	var chunk = chunk_scn.instantiate()
+	var chunk: Chunk = chunk_scn.instantiate()
 	chunk.chunk_size = size
 	chunk.chunk_pos = pos*size
 	chunk.lod_level = level
@@ -54,7 +54,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	wait_for_thread()
 
-func update_lod(lod: int):
+func update_lod(lod: int) -> void:
 	wait_for_thread()
 	lod_level = lod
 	
@@ -68,19 +68,19 @@ func update_lod(lod: int):
 		thread = thread.bind(chunk_data, lod_level, self.generate_mesh)
 		thread_id = WorkerThreadPool.add_task(thread)
 
-func wait_for_thread():
+func wait_for_thread() -> void:
 	if thread_id != 0:
 		WorkerThreadPool.wait_for_task_completion(thread_id)
 		thread_id = 0
 	
-func generate_mesh(surface_tool: SurfaceTool):
+func generate_mesh(surface_tool: SurfaceTool) -> void:
 	if chunk_data.contain_water:
 		generate_water()
-	var newmesh = ArrayMesh.new()
+	var newmesh: ArrayMesh = ArrayMesh.new()
 	newmesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_tool.commit_to_arrays())
 	meshes[lod_level] = newmesh
 	
-	var shape = ConcavePolygonShape3D.new()
+	var shape: Shape3D = ConcavePolygonShape3D.new()
 	shape.set_faces(surface_tool.commit_to_arrays()[Mesh.ARRAY_VERTEX])
 	shapes[lod_level] = shape
 	
@@ -93,7 +93,7 @@ func generate_mesh(surface_tool: SurfaceTool):
 		
 	loaded = true
 
-func generate_water():
+func generate_water() -> void:
 	water.scale=Vector3.ONE*chunk_size
 	water.position = Vector3(chunk_size/2, 50.0, chunk_size/2)
 	water.visible = true

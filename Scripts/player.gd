@@ -1,35 +1,35 @@
 extends CharacterBody3D
 
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var speed = 64.0
-var defaultSpeed = 4.0
-var sprintSpeed = 25.0
-var jump_speed = 11.0
-var mouse_sensitivity = 0.002
-var actionPressed = false
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var speed: float = 64.0
+var defaultSpeed: float = 4.0
+var sprintSpeed: float = 25.0
+var jump_speed: float = 11.0
+var mouse_sensitivity: float = 0.002
+var actionPressed: bool = false
 
 var fly_mode: bool = true
 var player_dir: Vector3 = Vector3(1.0,0.0,0.0)
 
 @onready var camera_3d: Camera3D = $Camera3D
 
-func _ready():
+func _ready() -> void:
 	player_dir = Vector3(-sin(rotation.y), 0.0, -cos(rotation.y)).normalized()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-func get_input():
-	var input = Input.get_vector("left", "right", "forward", "back")
-	var movement_dir = transform.basis * Vector3(input.x, 0, input.y)
+func get_input() -> void:
+	var input := Input.get_vector("left", "right", "forward", "back")
+	var movement_dir := transform.basis * Vector3(input.x, 0, input.y)
 	velocity.x = movement_dir.x * speed
 	velocity.z = movement_dir.z * speed
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	if !fly_mode:
 		velocity.y += -gravity * delta
 	get_input()
 	move_and_slide()
 
-func _unhandled_input(event):
+func _unhandled_input(event) -> void:
 	#if event.is_action_pressed("sprint"):
 	#	speed = sprintSpeed
 	#if event.is_action_released("sprint"):

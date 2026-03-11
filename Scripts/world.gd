@@ -32,38 +32,39 @@ func _process(_delta: float) -> void:
 func load_chunks(player_chunk: Vector3) -> void:
 	for x in range(int(player_chunk.x) - view_distance, int(player_chunk.x) + view_distance+1):
 		for z in range(int(player_chunk.z) - view_distance, int(player_chunk.z) + view_distance+1):
-			var chunk_pos = Vector3(x,0,z)
-			var chunk_dist = chunk_pos.distance_to(player_chunk)
-			var lod = int(chunk_dist/lod_level_chunk)
+			var chunk_pos := Vector3(x,0,z)
+			var chunk_dist := chunk_pos.distance_to(player_chunk)
+			var lod := int(chunk_dist/lod_level_chunk)
 			if chunk_dist > view_distance:
 				continue
 			if chunks.has(chunk_pos):
-				if lod != chunks[chunk_pos].lod_level:
-					chunks[chunk_pos].update_lod(lod)
+				var chunk := chunks[chunk_pos]
+				if lod != chunk.lod_level:
+					chunk.update_lod(lod)
 				elif !check_out_view(chunk_pos):
-					toggle_load_chunk(chunks[chunk_pos], true)
+					toggle_load_chunk(chunk, true)
 			else:
-				var chunk = Chunk.new_chunk(chunk_pos, chunk_size, lod, chunk_res)
+				var chunk := Chunk.new_chunk(chunk_pos, chunk_size, lod, chunk_res)
 				self.add_child(chunk)
 				chunks[chunk_pos] = chunk
 
 func unload_chunks(player_chunk: Vector3) -> void:
-	for chunk in chunks.keys():
-		var chunk_distance = chunk.distance_to(player_chunk)
+	for chunk: Vector3 in chunks.keys():
+		var chunk_distance := chunk.distance_to(player_chunk)
 		if chunk_distance > view_distance:
 			erase_chunk(chunk)
 		elif check_out_view(chunk):
 			toggle_load_chunk(chunks[chunk], false)
 
-func check_out_view(chunk_pos:Vector3) -> bool:
+func check_out_view(chunk_pos: Vector3) -> bool:
 	return chunk_pos.distance_to(last_player_pos) > 1.5 and player.player_dir.dot((chunk_pos-last_player_pos).normalized()) <= -0.5
 
-func toggle_load_chunk(chunk: Chunk, loaded: bool):
+func toggle_load_chunk(chunk: Chunk, loaded: bool) -> void:
 	chunk.visible = loaded
 	#chunk.process_mode = Node.PROCESS_MODE_INHERIT if loaded else Node.PROCESS_MODE_DISABLED
 
 func erase_chunk(chunk_pos: Vector3) -> void:
-	var chunk_inst = chunks[chunk_pos]
+	var chunk_inst := chunks[chunk_pos]
 	chunk_inst.thread_canceled = true
 
 	remove_child(chunk_inst)

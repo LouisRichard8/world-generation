@@ -7,7 +7,7 @@ class_name Biome
 @export var humidity: float
 
 func evaluate(temp: float, hum: float) -> float:
-	var temperatureMatch = abs(temperature-temp)
-	var humidityMatch = abs(humidity-hum)
+	var temperatureMatch: float = abs(temperature-temp)
+	var humidityMatch: float = abs(humidity-hum)
 	
 	return temperatureMatch + humidityMatch
