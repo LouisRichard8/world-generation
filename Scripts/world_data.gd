@@ -20,5 +20,6 @@ class_name WorldData
 @export var curve_pv: Curve
 
 @export_group("Vegetation")
+@export var generate_grass: bool = true
 @export var grass_density: int = 5
 @export var grass_noise: NoiseTexture2D

@@ -44,7 +44,7 @@ func load_chunks(player_chunk: Vector3) -> void:
 				elif !check_out_view(chunk_pos):
 					toggle_load_chunk(chunk, true)
 			else:
-				var chunk := Chunk.new_chunk(chunk_pos, chunk_size, lod, chunk_res)
+				var chunk := chunck_generator.new_chunk(chunk_pos, chunk_size, lod, chunk_res)
 				self.add_child(chunk)
 				chunks[chunk_pos] = chunk
 

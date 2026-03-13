@@ -1,9 +1,21 @@
 class_name ChunkGenerator
 
+const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
+const grass_mesh = preload("res://Resources/test.tres")
+
 var world_data: WorldData
 
 func _init(data: WorldData) -> void:
 	world_data = data
+
+func new_chunk(pos: Vector3, size: int, level: int, res: int) -> Chunk:
+	var chunk: Chunk = chunk_scn.instantiate()
+	chunk.chunk_size = size
+	chunk.chunk_pos = pos*size
+	chunk.lod_level = level
+	chunk.chunk_res = res
+	chunk.chunk_data.set_data(pos*size, size, res)
+	return chunk
 
 func generate_chunk(chunk_data: ChunkData, lod_level: int, callback: Callable) -> void:
 	var surface_tool := SurfaceTool.new()
@@ -154,6 +166,9 @@ func get_biome(x: float, z: float) -> Color:
 	return Color(color.x, color.y, color.z, 1.0)
 
 func generate_grass(chunk_data: ChunkData) -> void:
+	chunk_data.grass.transform_format = MultiMesh.TRANSFORM_3D
+	chunk_data.grass.mesh = grass_mesh
+	
 	var chunk_size := chunk_data.chunk_size
 	var chunk_res := chunk_data.chunk_res
 	var size: int = chunk_res+2

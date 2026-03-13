@@ -1,8 +1,6 @@
 extends Node3D
 class_name Chunk
 
-const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
-
 @onready var label_3d: Label3D = $Label3D
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
@@ -10,9 +8,9 @@ const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
 @onready var vegetation: Node3D = $Vegetation
 @onready var grass: MultiMeshInstance3D = $Grass
 
-var lod_level: int = 1 
+var lod_level: int = 0 
 var chunk_pos: Vector3
-var chunk_size: float = 0
+var chunk_size: float
 var chunk_res: int
 
 var chunk_data: ChunkData = ChunkData.new()
@@ -26,25 +24,13 @@ var shapes: Dictionary[int, Shape3D] = {}
 var thread_canceled: bool = false
 var thread_id: int = 0
 
-static func new_chunk(pos: Vector3, size: int, level: int, res: int) -> Chunk:
-	var chunk: Chunk = chunk_scn.instantiate()
-	chunk.chunk_size = size
-	chunk.chunk_pos = pos*size
-	chunk.lod_level = level
-	chunk.chunk_res = res
-	chunk.chunk_data.set_data(pos*size, size, res)
-	return chunk
-
 func _ready() -> void:
 	label_3d.global_position = chunk_pos+Vector3(8,0,8)
 	label_3d.text = str(chunk_pos/chunk_size)
 	
 	position = chunk_pos + Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
-	var multimesh: MultiMesh = MultiMesh.new()
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.mesh = preload("res://Resources/test.tres")
 	
-	grass.multimesh = multimesh
+	grass.multimesh =  MultiMesh.new()
 	chunk_data.grass = grass.multimesh
 	
 	var thread: Callable = World.chunck_generator.generate_chunk
@@ -86,7 +72,7 @@ func generate_mesh(surface_tool: SurfaceTool) -> void:
 	
 	update_lod(lod_level)
 	
-	if lod_level < 2 and chunk_data.grass.instance_count == 0:
+	if lod_level < 2 and chunk_data.grass.instance_count == 0 and World.chunck_generator.world_data.generate_grass:
 		var thread: Callable = World.chunck_generator.generate_grass
 		thread = thread.bind(chunk_data)
 		thread_id = WorkerThreadPool.add_task(thread)
