@@ -25,10 +25,10 @@ var thread_canceled: bool = false
 var thread_id: int = 0
 
 func _ready() -> void:
-	label_3d.global_position = chunk_pos+Vector3(8,0,8)
+	label_3d.global_position += Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
 	label_3d.text = str(chunk_pos/chunk_size)
 	
-	position = chunk_pos + Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
+	position = chunk_pos - Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
 	
 	grass.multimesh =  MultiMesh.new()
 	chunk_data.grass = grass.multimesh

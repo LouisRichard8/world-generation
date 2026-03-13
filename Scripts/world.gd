@@ -21,7 +21,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	label.text = "FPS: %s" % [Engine.get_frames_per_second()]
-	var player_chunk: Vector3 = (player.global_transform.origin / chunk_size).floor()
+	var player_chunk: Vector3 = ((player.global_transform.origin + Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)) / chunk_size).floor()
 	player_chunk.y = 0.0
 	last_player_pos = player_chunk
 	$CharacterBody3D/Label3D.text = str(player_chunk)
