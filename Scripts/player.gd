@@ -51,5 +51,9 @@ func _unhandled_input(event) -> void:
 		velocity.y = -speed
 	if event.is_action_released("down"):
 		velocity.y = 0
+	if event.is_action_pressed("zoom"):
+		camera_3d.fov = 20.0
+	if event.is_action_released("zoom"):
+		camera_3d.fov = 75.0
 	if event.is_action_pressed("exit"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
