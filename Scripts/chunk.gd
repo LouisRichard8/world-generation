@@ -23,6 +23,7 @@ var shapes: Dictionary[int, Shape3D] = {}
 
 var thread_canceled: bool = false
 var thread_id: int = 0
+var grass_thread_id: int = 0
 
 func _ready() -> void:
 	label_3d.global_position += Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
@@ -39,6 +40,8 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	wait_for_thread()
+	if grass_thread_id != 0 and !WorkerThreadPool.is_task_completed(grass_thread_id):
+		WorkerThreadPool.wait_for_task_completion(grass_thread_id)
 
 func update_lod(lod: int) -> void:
 	wait_for_thread()
@@ -79,7 +82,7 @@ func generate_mesh(surface_tool: SurfaceTool) -> void:
 	if lod_level < 2 and chunk_data.grass.instance_count == 0 and World.chunck_generator.world_data.generate_grass:
 		var thread: Callable = World.chunck_generator.generate_grass
 		thread = thread.bind(chunk_data)
-		thread_id = WorkerThreadPool.add_task(thread)
+		grass_thread_id = WorkerThreadPool.add_task(thread)
 		
 	loaded = true
 

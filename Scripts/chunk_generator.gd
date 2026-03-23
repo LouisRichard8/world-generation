@@ -1,7 +1,7 @@
 class_name ChunkGenerator
 
 const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
-const grass_mesh = preload("res://Resources/test.tres")
+const grass_mesh: Resource = preload("res://Resources/Mesh/grass.res")
 
 var world_data: WorldData
 
@@ -68,7 +68,6 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	
 	for x in range(1, size+2):
 		for z in range(1, size+2):
-			
 			if chunk_data.generation_canceled:
 				print("cancel face")
 				return
@@ -152,7 +151,7 @@ func get_height(x: float, z: float) -> float:
 	height*=200.0
 	
 	return height
-	
+
 func get_biome(x: float, z: float) -> Color:
 	var color: Vector3 = Vector3.ZERO
 	var temp := (world_data.temperature.noise.get_noise_2d(x, z)+1.0)/2.0
@@ -225,8 +224,11 @@ func generate_grass(chunk_data: ChunkData) -> void:
 						pos += CD_vert*x_percent + AC_vert*z_percent
 						normal += CD_norm*x_percent + AC_norm*z_percent
 					
-					if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
-						var transform: Transform3D = Transform3D(Basis() * Basis(Vector3.UP, randf_range(0, 2*PI)), pos)
+					if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0 and world_data.grass_noise.noise.get_noise_2d(pos.x, pos.z) > -0.5:
+						var scale: float = randf_range(0.3, 0.5)
+						var rotation: float = randf_range(0, 2*PI)
+						pos += Vector3(randf_range(0.0, stepGrass)/2.0, 0.0, randf_range(0.0, stepGrass)/2.0)
+						var transform: Transform3D = Transform3D(Basis(Vector3.UP, rotation).scaled(Vector3(scale,scale,scale)), pos)
 						chunk_data.grass.set_instance_transform(grass_index, transform)
 						grass_index+=1
 						
