@@ -65,8 +65,8 @@ func toggle_load_chunk(chunk: Chunk, loaded: bool) -> void:
 
 func erase_chunk(chunk_pos: Vector3) -> void:
 	var chunk_inst := chunks[chunk_pos]
-	chunk_inst.thread_canceled = true
-
+	
 	remove_child(chunk_inst)
-	chunk_inst.queue_free()
 	chunks.erase(chunk_pos)
+	
+	chunk_inst.remove_chunk()

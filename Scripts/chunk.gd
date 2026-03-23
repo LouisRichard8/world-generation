@@ -59,6 +59,10 @@ func wait_for_thread() -> void:
 		WorkerThreadPool.wait_for_task_completion(thread_id)
 		thread_id = 0
 	
+func remove_chunk() -> void:
+	chunk_data.generation_canceled = true
+	chunk_unloader.unload_chunk(self)
+
 func generate_mesh(surface_tool: SurfaceTool) -> void:
 	if chunk_data.contain_water:
 		generate_water()

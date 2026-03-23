@@ -22,7 +22,9 @@ func generate_chunk(chunk_data: ChunkData, lod_level: int, callback: Callable) -
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	generate_data(surface_tool, chunk_data, lod_level)
-	
+	if chunk_data.generation_canceled:
+		print("cancel chunk")
+		return
 	callback.call_deferred(surface_tool)
 
 func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: int) -> void:
@@ -32,9 +34,17 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	var size: int = chunk_res+2
 	
 	if !chunk_data.vertexes_generated:
+		chunk_data.vertexes.resize((chunk_res+5)**2)
+		chunk_data.normals.resize((chunk_res+5)**2)
+		chunk_data.colors.resize((chunk_res+5)**2)
+		
 		var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
+		
 		for x in range(chunk_res+5): 
 			for z in range(chunk_res+5):
+				if chunk_data.generation_canceled:
+					print("cancel vert")
+					return
 				var real_x: float = x*stepBetweenPoint - stepBetweenPoint
 				var real_z: float = z*stepBetweenPoint - stepBetweenPoint
 				var index: int = x*(chunk_res+5)+z
@@ -59,6 +69,9 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	for x in range(1, size+2):
 		for z in range(1, size+2):
 			
+			if chunk_data.generation_canceled:
+				print("cancel face")
+				return
 			if x > 1 and z > 1:
 				#if Vector3.UP.dot(chunk_data.normals[x*(size+3)+z]) > 0.8 and x%2 == 0 and z%2 == 0 and chunk_data.vertexes[x*(size+3)+z].y > world_data.water_level+5.0:
 					#var tree = tree_scn.instantiate()
@@ -181,6 +194,8 @@ func generate_grass(chunk_data: ChunkData) -> void:
 	
 	for x in range(3, chunk_res+5): 
 		for z in range(3, chunk_res+5):
+			if chunk_data.generation_canceled:
+				return
 			var indexA := (x-2)*(chunk_res+5)+z-2
 			var indexB := (x-2)*(chunk_res+5)+z-1
 			var indexC := (x-1)*(chunk_res+5)+z-2
@@ -195,6 +210,8 @@ func generate_grass(chunk_data: ChunkData) -> void:
 			var AC_norm := chunk_data.normals[indexC]-chunk_data.normals[indexA]
 			for i in range(world_data.grass_density):
 				for j in range(world_data.grass_density):
+					if chunk_data.generation_canceled:
+						return
 					var pos: Vector3 = chunk_data.vertexes[indexA]
 					var normal: Vector3 = chunk_data.normals[indexA]
 					
