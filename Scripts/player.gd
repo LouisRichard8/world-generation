@@ -12,8 +12,10 @@ var fly_mode: bool = true
 var player_dir: Vector3 = Vector3(1.0,0.0,0.0)
 
 @onready var camera_3d: Camera3D = $Camera3D
+@export var fov: float = 75.0
 
 func _ready() -> void:
+	camera_3d.fov = fov
 	player_dir = Vector3(-sin(rotation.y), 0.0, -cos(rotation.y)).normalized()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -54,6 +56,6 @@ func _unhandled_input(event) -> void:
 	if event.is_action_pressed("zoom"):
 		camera_3d.fov = 20.0
 	if event.is_action_released("zoom"):
-		camera_3d.fov = 75.0
+		camera_3d.fov = fov
 	if event.is_action_pressed("exit"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
