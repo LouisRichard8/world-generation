@@ -1,43 +1,122 @@
-[gd_scene load_steps=8 format=3 uid="uid://ck4fkp88gwd43"]
+[gd_scene load_steps=20 format=3 uid="uid://ck4fkp88gwd43"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vkxxa"]
+[ext_resource type="Script" uid="uid://bsk32e2ycetdb" path="res://Scripts/day_night_cycle.gd" id="1_kroqa"]
+[ext_resource type="PackedScene" uid="uid://ddu5cjb5vh7yv" path="res://Scenes/tree.tscn" id="2_eaaao"]
+[ext_resource type="Gradient" uid="uid://bammy06cn5758" path="res://Resources/Sky/sky_top_color.tres" id="2_g3s1v"]
+[ext_resource type="Gradient" uid="uid://b6rf1uf6ywj0q" path="res://Resources/Sky/sky_horizon_color.tres" id="3_s63db"]
+[ext_resource type="Gradient" uid="uid://eqbg4y2kphmm" path="res://Resources/Sky/sun_color.tres" id="4_rcxne"]
+[ext_resource type="Curve" uid="uid://c0e50qura2s04" path="res://Resources/Sky/sun_intensity.tres" id="5_dqou0"]
+[ext_resource type="Gradient" uid="uid://doads6j3wda5w" path="res://Resources/Sky/moon_color.tres" id="6_pn3jq"]
+[ext_resource type="Curve" uid="uid://b54khctsltr5c" path="res://Resources/Sky/moon_intensity.tres" id="7_66sjn"]
+[ext_resource type="Shader" uid="uid://ct585t64om7uv" path="res://Shaders/sky.gdshader" id="8_s63db"]
+[ext_resource type="Script" uid="uid://b2vg5hksr665l" path="res://Scripts/player.gd" id="11_dqou0"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rcxne"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_dqou0"]
+width = 256
+height = 256
+depth = 256
+seamless = true
+noise = SubResource("FastNoiseLite_rcxne")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcxne"]
+shader = ExtResource("8_s63db")
+shader_parameter/sky_top_color = Color(0.126057, 0.351047, 0.486004, 1)
+shader_parameter/sky_horizon_color = Color(0.303988, 0.376253, 0.370862, 1)
+shader_parameter/ground_horizon_color = Color(0.303988, 0.376253, 0.370862, 1)
+shader_parameter/ground_bottom_color = Color(0.126057, 0.351047, 0.486004, 1)
+shader_parameter/day_time = false
+shader_parameter/sun_color = Color(0.932584, 0.666446, 0.49347, 1)
+shader_parameter/sun_radius = 2.0
+shader_parameter/moon_color = Color(0, 0, 0, 1)
+shader_parameter/moon_radius = 1.0
+shader_parameter/render_clouds = false
+shader_parameter/coverage = 0.525
+shader_parameter/thickness = 55.0
+shader_parameter/absorption = 0.9
+shader_parameter/wind_direction = Vector2(1, 1)
+shader_parameter/wind_force = 10.0
+shader_parameter/cloud_noise = SubResource("NoiseTexture3D_dqou0")
+shader_parameter/march_steps = 8
 
 [sub_resource type="Sky" id="Sky_kroqa"]
-sky_material = SubResource("ProceduralSkyMaterial_vkxxa")
+sky_material = SubResource("ShaderMaterial_rcxne")
 
 [sub_resource type="Environment" id="Environment_eaaao"]
 background_mode = 2
 sky = SubResource("Sky_kroqa")
-
-[sub_resource type="SphereMesh" id="SphereMesh_hy3ix"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_yab1b"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kroqa"]
 albedo_color = Color(0.381824, 0.640593, 0, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_eaaao"]
 material = SubResource("StandardMaterial3D_kroqa")
-size = Vector2(10, 10)
+size = Vector2(60, 60)
 
-[node name="WorldEnvironment" type="WorldEnvironment"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pn3jq"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_66sjn"]
+
+[node name="DayNightCycle" type="Node3D"]
+script = ExtResource("1_kroqa")
+time_flow = false
+time = 0.777207
+sky_top_color = ExtResource("2_g3s1v")
+sky_horizon_color = ExtResource("3_s63db")
+sun_color = ExtResource("4_rcxne")
+sun_intensity = ExtResource("5_dqou0")
+moon_color = ExtResource("6_pn3jq")
+moon_intensity = ExtResource("7_66sjn")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_eaaao")
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.985429, -0.170116, 0, 0.170116, 0.985429, 0, 0, 0)
+visible = false
+light_color = Color(0.932584, 0.666446, 0.49347, 1)
+light_energy = 0.0
+shadow_enabled = true
 
-[node name="Sun" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
-mesh = SubResource("SphereMesh_hy3ix")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D/Sun"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="Moon" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
-mesh = SubResource("SphereMesh_yab1b")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Node3D/Moon"]
-light_energy = 0.5
+[node name="Moon" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, -0.985424, 0.170115, 0, -0.170115, -0.985424, 0, 0, 0)
+light_color = Color(0.173517, 0.308186, 0.753904, 1)
+light_energy = 0.34251
+shadow_enabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_eaaao")
+skeleton = NodePath("../WorldEnvironment")
+
+[node name="Tree" parent="MeshInstance3D" instance=ExtResource("2_eaaao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75759, 2.38419e-07, 13.9031)
+
+[node name="Tree2" parent="MeshInstance3D" instance=ExtResource("2_eaaao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.09808, 2.38419e-07, 1.96899)
+
+[node name="Tree3" parent="MeshInstance3D" instance=ExtResource("2_eaaao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.44105, 2.38419e-07, -5.50914)
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." groups=["Player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 0)
+script = ExtResource("11_dqou0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_pn3jq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_66sjn")
+skeleton = NodePath("../..")
+
+[node name="Label3D" type="Label3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.27553, 0)
+visible = false
+pixel_size = 0.5
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.818112, -0.515154)
+
+[node name="Label" type="Label" parent="CharacterBody3D"]
+offset_right = 40.0
+offset_bottom = 23.0
