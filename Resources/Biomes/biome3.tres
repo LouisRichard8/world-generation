@@ -7,4 +7,6 @@ script = ExtResource("1_t0dcg")
 color = Color(1, 1, 1, 1)
 temperature = 0.3
 humidity = 0.4
+continentalness = 0.8
+erosion = 0.2
 metadata/_custom_type_script = "uid://bdqb5aohk8k2s"

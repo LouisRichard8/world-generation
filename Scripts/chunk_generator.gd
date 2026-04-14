@@ -49,9 +49,11 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 				var real_z: float = z*stepBetweenPoint - stepBetweenPoint
 				var index: int = x*(chunk_res+5)+z
 				
-				chunk_data.colors[index] = get_biome(real_x+chunk_pos.x, real_z+chunk_pos.z)
+				var noise_data: NoiseData = NoiseData.new(world_data, (real_x+chunk_pos.x)/5.0, (real_z+chunk_pos.z)/5.0)
 				
-				var height: float = get_height(real_x+chunk_pos.x, real_z+chunk_pos.z)
+				chunk_data.colors[index] = get_biome(noise_data)
+				
+				var height: float = get_height(noise_data)
 					
 				if height < world_data.water_level:
 					chunk_data.contain_water = true
@@ -140,29 +142,27 @@ func calculate_triangle_normal(A: Vector3, B: Vector3, C: Vector3) -> Vector3:
 	var AC := C - A
 	return AB.cross(AC).normalized()
 
-func get_height(x: float, z: float) -> float:
+func get_height(noise_data: NoiseData) -> float:
 	var height := 0.0
-	
-	height += world_data.curve_continentalness.sample(world_data.continentalness.noise.get_noise_2d(x, z))
-	height += world_data.curve_erosion.sample(world_data.erosion.noise.get_noise_2d(x, z))
-	height += world_data.curve_pv.sample(world_data.pv.noise.get_noise_2d(x, z))
+	#return 60.0
+	height += noise_data.continentalness
+	height += noise_data.erosion
+	height += noise_data.pv
 	height/=3.0
 	
 	height*=200.0
 	
 	return height
 
-func get_biome(x: float, z: float) -> Color:
+func get_biome(noise_data: NoiseData) -> Color:
 	var color: Vector3 = Vector3.ZERO
-	var temp := (world_data.temperature.noise.get_noise_2d(x, z)+1.0)/2.0
-	var hum := (world_data.humidity.noise.get_noise_2d(x, z)+1.0)/2.0
 	
 	var biomesMatch: Dictionary[Biome, float] = {}
 	var minMatch := pow(3, 10.0)
 	var maxMatch := 0.0
 	
 	for biome in world_data.biomes:
-		var biomeMatch := biome.evaluate(temp, hum)
+		var biomeMatch := biome.evaluate(noise_data)
 		biomeMatch = 1 / (biomeMatch + 0.001)
 		biomeMatch = pow(biomeMatch+1, 10.0)
 		minMatch = min(minMatch, biomeMatch)
