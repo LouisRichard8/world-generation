@@ -20,6 +20,15 @@ class_name WorldData
 @export var curve_pv: Curve
 
 @export_group("Vegetation")
+@export_subgroup("Grass")
 @export var generate_grass: bool = true
+@export var grass_visibility_distance: int = 3
 @export var grass_density: int = 5
-@export var grass_noise: NoiseTexture2D
+@export var grass_repartition: NoiseTexture2D
+@export var grass: Dictionary[ChunkGenerator.GrassType, Mesh]
+
+@export_subgroup("Tree")
+@export var generate_tree: bool = true
+@export var tree_visibility_distance: int = 5
+@export var tree_repartition: NoiseTexture2D
+@export var tree: Dictionary[ChunkGenerator.TreeType, Mesh]

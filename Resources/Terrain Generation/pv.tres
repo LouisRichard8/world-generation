@@ -2,9 +2,9 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pkg7o"]
 noise_type = 3
-seed = 2
-frequency = 0.02
-fractal_octaves = 3
+fractal_type = 3
+fractal_octaves = 2
+fractal_lacunarity = 1.0
 
 [resource]
 noise = SubResource("FastNoiseLite_pkg7o")

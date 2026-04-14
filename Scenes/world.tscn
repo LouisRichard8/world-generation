@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://tppwhl4nojup"]
+[gd_scene load_steps=31 format=3 uid="uid://tppwhl4nojup"]
 
 [ext_resource type="Script" uid="uid://br04m004d3oy5" path="res://Scripts/world.gd" id="1_f3sb7"]
 [ext_resource type="Texture2D" uid="uid://bou4xc78khrau" path="res://Resources/Terrain Generation/temperature.tres" id="2_0fj1v"]
@@ -15,13 +15,24 @@
 [ext_resource type="Curve" uid="uid://bynals84ena8i" path="res://Resources/Terrain Generation/curve_erosion.tres" id="7_kn0ld"]
 [ext_resource type="Texture2D" uid="uid://b5nx6p8q2j33m" path="res://Resources/Terrain Generation/pv.tres" id="8_hgpy0"]
 [ext_resource type="Script" uid="uid://bmivcxysc8hta" path="res://Scripts/world_data.gd" id="9_ikia7"]
+[ext_resource type="ArrayMesh" uid="uid://doaoltg3x47mp" path="res://Resources/Mesh/grass.res" id="11_t2t4p"]
+[ext_resource type="ArrayMesh" uid="uid://b7ot3wi0obj2q" path="res://Resources/Mesh/grassbushred.res" id="12_0pcbe"]
+[ext_resource type="ArrayMesh" uid="uid://58b1umi06bbi" path="res://Resources/Mesh/birch.res" id="17_0pcbe"]
+[ext_resource type="ArrayMesh" uid="uid://b166ygunwebsk" path="res://Resources/Mesh/oak.res" id="18_1cojt"]
+[ext_resource type="ArrayMesh" uid="uid://dvp435evm47q6" path="res://Resources/Mesh/pine.res" id="19_yq1aw"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kn0ld"]
 noise_type = 2
+frequency = 0.0355
 fractal_octaves = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hgpy0"]
 noise = SubResource("FastNoiseLite_kn0ld")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0pcbe"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_axeuq"]
+noise = SubResource("FastNoiseLite_0pcbe")
 
 [sub_resource type="Resource" id="Resource_7yui6"]
 script = ExtResource("9_ikia7")
@@ -35,8 +46,22 @@ erosion = ExtResource("6_e0ngr")
 curve_erosion = ExtResource("7_kn0ld")
 pv = ExtResource("8_hgpy0")
 curve_pv = ExtResource("2_5a7ea")
+generate_grass = true
+grass_visibility_distance = 3
 grass_density = 3
-grass_noise = SubResource("NoiseTexture2D_hgpy0")
+grass_repartition = SubResource("NoiseTexture2D_hgpy0")
+grass = Dictionary[int, Mesh]({
+1: ExtResource("11_t2t4p"),
+2: ExtResource("12_0pcbe")
+})
+generate_tree = true
+tree_visibility_distance = 5
+tree_repartition = SubResource("NoiseTexture2D_axeuq")
+tree = Dictionary[int, Mesh]({
+1: ExtResource("17_0pcbe"),
+2: ExtResource("18_1cojt"),
+3: ExtResource("19_yq1aw")
+})
 metadata/_custom_type_script = "uid://bmivcxysc8hta"
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
@@ -61,18 +86,11 @@ volumetric_fog_density = 0.2167
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fj7yv"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fj7yv"]
-albedo_color = Color(0.179801, 0.472114, 0.721308, 1)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_tlwt5"]
-material = SubResource("StandardMaterial3D_fj7yv")
-size = Vector2(16, 16)
-
 [node name="World" type="Node3D"]
 script = ExtResource("1_f3sb7")
-chunk_size = 64
+chunk_size = 128
 lod_level_chunk = 3
-chunk_res = 32
+chunk_res = 64
 world_data = SubResource("Resource_7yui6")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -95,7 +113,7 @@ skeleton = NodePath("../..")
 [node name="Label3D" type="Label3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.27553, 0)
 visible = false
-pixel_size = 0.04
+pixel_size = 0.5
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.818112, -0.515154)
@@ -106,11 +124,7 @@ offset_bottom = 23.0
 
 [node name="Up" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 210, 0)
+fov = 100.0
 
 [node name="Side" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.943315, 0.331898, 0, -0.331898, 0.943315, 0, 119.577, 196.038)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 80, 0)
-visible = false
-mesh = SubResource("PlaneMesh_tlwt5")

@@ -1,7 +1,19 @@
 class_name ChunkGenerator
 
+enum GrassType{
+	NONE,
+	GRASS,
+	GRASS_RED_BUSH
+}
+
+enum TreeType{
+	NONE,
+	BIRCH,
+	OAK,
+	PINE
+}
+
 const chunk_scn: Resource = preload("res://Scenes/chunk.tscn")
-const grass_mesh: Resource = preload("res://Resources/Mesh/grass.res")
 
 var world_data: WorldData
 
@@ -177,19 +189,15 @@ func get_biome(noise_data: NoiseData) -> Color:
 	
 	return Color(color.x, color.y, color.z, 1.0)
 
-func generate_grass(chunk_data: ChunkData) -> void:
-	chunk_data.grass.transform_format = MultiMesh.TRANSFORM_3D
-	chunk_data.grass.mesh = grass_mesh
+func generate_grass(chunk_data: ChunkData, vegetation_data: VegetationData, callback: Callable) -> void:
+	var grass_transforms: Dictionary[GrassType, Array] = {}
+	var trees_transforms: Dictionary[TreeType, Array] = {}
 	
 	var chunk_size := chunk_data.chunk_size
 	var chunk_res := chunk_data.chunk_res
-	var size: int = chunk_res+2
 	
 	var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
 	var stepGrass: float = stepBetweenPoint/world_data.grass_density
-	
-	chunk_data.grass.instance_count = (world_data.grass_density**2)*(size**2)
-	var grass_index = 0
 	
 	for x in range(3, chunk_res+5): 
 		for z in range(3, chunk_res+5):
@@ -207,6 +215,17 @@ func generate_grass(chunk_data: ChunkData) -> void:
 			var BD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexB]
 			var CD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexC]
 			var AC_norm := chunk_data.normals[indexC]-chunk_data.normals[indexA]
+			
+			if world_data.generate_tree and x%2==0 and z%2==0:
+				var vertex: Vector3 = chunk_data.vertexes[indexD]
+				var normal: Vector3 = chunk_data.normals[indexD]
+				var tree_type: TreeType = get_tree_type(vertex.x+chunk_data.chunk_pos.x, vertex.z+chunk_data.chunk_pos.z)
+				if tree_type != TreeType.NONE:
+					if Vector3.UP.dot(normal.normalized()) > 0.8 and vertex.y > world_data.water_level+5.0:
+						if !trees_transforms.has(tree_type):
+							trees_transforms[tree_type] = []
+						trees_transforms[tree_type].append(get_transform(vertex, 5.0, 0.7, 1.0))
+							
 			for i in range(world_data.grass_density):
 				for j in range(world_data.grass_density):
 					if chunk_data.generation_canceled:
@@ -224,12 +243,77 @@ func generate_grass(chunk_data: ChunkData) -> void:
 						pos += CD_vert*x_percent + AC_vert*z_percent
 						normal += CD_norm*x_percent + AC_norm*z_percent
 					
-					if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0 and world_data.grass_noise.noise.get_noise_2d(pos.x, pos.z) > -0.5:
-						var scale: float = randf_range(0.3, 0.5)
-						var rotation: float = randf_range(0, 2*PI)
-						pos += Vector3(randf_range(0.0, stepGrass)/2.0, 0.0, randf_range(0.0, stepGrass)/2.0)
-						var transform: Transform3D = Transform3D(Basis(Vector3.UP, rotation).scaled(Vector3(scale,scale,scale)), pos)
-						chunk_data.grass.set_instance_transform(grass_index, transform)
-						grass_index+=1
-						
-	chunk_data.grass.visible_instance_count = grass_index
+					var grass_type: GrassType = get_grass_type(pos.x+chunk_data.chunk_pos.x, pos.z+chunk_data.chunk_pos.z)
+					if grass_type != GrassType.NONE:
+						if !grass_transforms.has(grass_type):
+							grass_transforms[grass_type] = []
+						if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
+							grass_transforms[grass_type].append(get_transform(pos, stepGrass, 0.3, 0.5)) 
+
+	for type: GrassType in grass_transforms:
+		var multimesh = create_multimesh(world_data.grass[type])
+		var grass_array: Array = grass_transforms[type]
+		var size: int = grass_array.size()
+		multimesh.instance_count = size
+		for i in range(size):
+			multimesh.set_instance_transform(i, grass_array[i])
+		var multimesh_instance = MultiMeshInstance3D.new()
+		multimesh_instance.multimesh = multimesh
+		multimesh_instance.visibility_range_end = world_data.grass_visibility_distance*chunk_size
+		vegetation_data.grass.append(multimesh_instance)
+	
+	for type: TreeType in trees_transforms:
+		var multimesh = create_multimesh(world_data.tree[type])
+		var trees_array: Array = trees_transforms[type]
+		var size: int = trees_array.size()
+		multimesh.instance_count = size
+		for i in range(size):
+			multimesh.set_instance_transform(i, trees_array[i])
+		var multimesh_instance = MultiMeshInstance3D.new()
+		multimesh_instance.multimesh = multimesh
+		multimesh_instance.visibility_range_end = world_data.tree_visibility_distance*chunk_size
+		vegetation_data.trees.append(multimesh_instance)
+	
+	vegetation_data.generated = true
+	
+	callback.call_deferred()
+
+func get_grass_type(x: float, z: float) -> GrassType:
+	var grass_type: GrassType = GrassType.NONE
+	var grass_repartition: float = world_data.grass_repartition.noise.get_noise_2d(x,z)
+	
+	if grass_repartition > -0.5 and randf_range(-0.5, -0.3) < grass_repartition:
+		var weirdness: float = randf_range(0.0, 1.0)
+		if weirdness > 0.8:
+			grass_type = GrassType.GRASS_RED_BUSH
+		else:
+			grass_type = GrassType.GRASS
+		
+	return grass_type
+
+func get_tree_type(x: float, z: float) -> TreeType:
+	var tree_type: TreeType = TreeType.NONE
+	var tree_repartition: float = world_data.tree_repartition.noise.get_noise_2d(x,z)
+	
+	if tree_repartition > 0.0 and randf_range(0.0, 0.3) < tree_repartition:
+		var weirdness: float = randf_range(0.0, 1.0)
+		if weirdness > 0.8:
+			tree_type = TreeType.OAK
+		else:
+			tree_type = TreeType.BIRCH
+		
+	return tree_type
+
+func get_transform(pos: Vector3, step: float, min_scale: float, max_scale: float) -> Transform3D:
+	var scale: float = randf_range(min_scale, max_scale)
+	var rotation: float = randf_range(0, 2*PI)
+	pos += Vector3(randf_range(0.0, step)/2.0, 0.0, randf_range(0.0, step)/2.0)
+	var transform: Transform3D = Transform3D(Basis(Vector3.UP, rotation).scaled(Vector3(scale,scale,scale)), pos)
+	return transform	
+
+func create_multimesh(mesh: Mesh) -> MultiMesh:
+	var multimesh = MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.mesh = mesh
+	
+	return multimesh

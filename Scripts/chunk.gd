@@ -5,8 +5,7 @@ class_name Chunk
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var water: MeshInstance3D = $Water
-@onready var vegetation: Node3D = $Vegetation
-@onready var grass: MultiMeshInstance3D = $Grass
+@onready var vegetation: VegetationManager = $Vegetation
 
 var lod_level: int = 0 
 var chunk_pos: Vector3
@@ -31,8 +30,7 @@ func _ready() -> void:
 	
 	position = chunk_pos - Vector3(chunk_size/2.0, 0.0, chunk_size/2.0)
 	
-	grass.multimesh =  MultiMesh.new()
-	chunk_data.grass = grass.multimesh
+	vegetation.chunk_data = chunk_data
 	
 	var thread: Callable = World.chunck_generator.generate_chunk
 	thread = thread.bind(chunk_data, lod_level, self.generate_mesh)
@@ -46,8 +44,6 @@ func _exit_tree() -> void:
 func update_lod(lod: int) -> void:
 	wait_for_thread()
 	lod_level = lod
-	
-	grass.visible = lod_level == 0
 		
 	if meshes.has(lod_level):
 		mesh.mesh = meshes[lod_level]
@@ -79,10 +75,8 @@ func generate_mesh(surface_tool: SurfaceTool) -> void:
 	
 	update_lod(lod_level)
 	
-	if lod_level < 2 and chunk_data.grass.instance_count == 0 and World.chunck_generator.world_data.generate_grass:
-		var thread: Callable = World.chunck_generator.generate_grass
-		thread = thread.bind(chunk_data)
-		grass_thread_id = WorkerThreadPool.add_task(thread)
+	if lod_level < 2 and World.chunck_generator.world_data.generate_grass:
+		vegetation.generate_vegetation()
 		
 	loaded = true
 

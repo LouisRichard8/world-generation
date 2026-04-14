@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcda6ht4rqbp0"]
+[gd_scene load_steps=7 format=3 uid="uid://bcda6ht4rqbp0"]
 
 [ext_resource type="Script" uid="uid://dhmhvgam6ap6c" path="res://Scripts/chunk.gd" id="1_kdh3y"]
 [ext_resource type="Shader" uid="uid://8bmsx7qmpv54" path="res://Shaders/chunk.tres" id="2_eat54"]
+[ext_resource type="Script" uid="uid://dw1pa8uw2p7wu" path="res://Scripts/vegetation_manager.gd" id="3_s0xx0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eat54"]
 render_priority = 0
@@ -34,7 +35,8 @@ visible = false
 mesh = SubResource("PlaneMesh_eat54")
 
 [node name="Vegetation" type="Node3D" parent="."]
+script = ExtResource("3_s0xx0")
 
-[node name="Grass" type="MultiMeshInstance3D" parent="."]
-visible = false
-cast_shadow = 0
+[node name="Grass" type="Node3D" parent="Vegetation"]
+
+[node name="Trees" type="Node3D" parent="Vegetation"]

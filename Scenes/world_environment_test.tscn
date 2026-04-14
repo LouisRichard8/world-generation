@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ck4fkp88gwd43"]
+[gd_scene load_steps=17 format=3 uid="uid://ck4fkp88gwd43"]
 
 [ext_resource type="Script" uid="uid://bsk32e2ycetdb" path="res://Scripts/day_night_cycle.gd" id="1_kroqa"]
 [ext_resource type="PackedScene" uid="uid://ddu5cjb5vh7yv" path="res://Scenes/tree.tscn" id="2_eaaao"]
@@ -9,7 +9,6 @@
 [ext_resource type="Gradient" uid="uid://doads6j3wda5w" path="res://Resources/Sky/moon_color.tres" id="6_pn3jq"]
 [ext_resource type="Curve" uid="uid://b54khctsltr5c" path="res://Resources/Sky/moon_intensity.tres" id="7_66sjn"]
 [ext_resource type="Shader" uid="uid://ct585t64om7uv" path="res://Shaders/sky.gdshader" id="8_s63db"]
-[ext_resource type="Script" uid="uid://b2vg5hksr665l" path="res://Scripts/player.gd" id="11_dqou0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_rcxne"]
 
@@ -23,8 +22,8 @@ noise = SubResource("FastNoiseLite_rcxne")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcxne"]
 shader = ExtResource("8_s63db")
 shader_parameter/sky_top_color = Color(0.126057, 0.351047, 0.486004, 1)
-shader_parameter/sky_horizon_color = Color(0.303988, 0.376253, 0.370862, 1)
-shader_parameter/ground_horizon_color = Color(0.303988, 0.376253, 0.370862, 1)
+shader_parameter/sky_horizon_color = Color(0.303988, 0.376252, 0.370862, 1)
+shader_parameter/ground_horizon_color = Color(0.303988, 0.376252, 0.370862, 1)
 shader_parameter/ground_bottom_color = Color(0.126057, 0.351047, 0.486004, 1)
 shader_parameter/day_time = false
 shader_parameter/sun_color = Color(0.932584, 0.666446, 0.49347, 1)
@@ -54,10 +53,6 @@ albedo_color = Color(0.381824, 0.640593, 0, 1)
 material = SubResource("StandardMaterial3D_kroqa")
 size = Vector2(60, 60)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pn3jq"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_66sjn"]
-
 [node name="DayNightCycle" type="Node3D"]
 script = ExtResource("1_kroqa")
 time_flow = false
@@ -82,10 +77,11 @@ shadow_enabled = true
 [node name="Moon" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, -0.985424, 0.170115, 0, -0.170115, -0.985424, 0, 0, 0)
 light_color = Color(0.173517, 0.308186, 0.753904, 1)
-light_energy = 0.34251
+light_energy = 0.342511
 shadow_enabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("PlaneMesh_eaaao")
 skeleton = NodePath("../WorldEnvironment")
 
@@ -97,26 +93,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.09808, 2.38419e-07, 1.9689
 
 [node name="Tree3" parent="MeshInstance3D" instance=ExtResource("2_eaaao")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.44105, 2.38419e-07, -5.50914)
-
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." groups=["Player"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 0)
-script = ExtResource("11_dqou0")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
-shape = SubResource("CapsuleShape3D_pn3jq")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
-mesh = SubResource("CapsuleMesh_66sjn")
-skeleton = NodePath("../..")
-
-[node name="Label3D" type="Label3D" parent="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.27553, 0)
-visible = false
-pixel_size = 0.5
-
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.818112, -0.515154)
-
-[node name="Label" type="Label" parent="CharacterBody3D"]
-offset_right = 40.0
-offset_bottom = 23.0
