@@ -1,0 +1,99 @@
+[gd_scene load_steps=13 format=3 uid="uid://cyq2pme4fjwcl"]
+
+[ext_resource type="Script" uid="uid://b2vg5hksr665l" path="res://Scripts/player.gd" id="1_ltcba"]
+[ext_resource type="PackedScene" uid="uid://c41pku425f4uc" path="res://Scenes/build_manager.tscn" id="2_ltcba"]
+[ext_resource type="PackedScene" uid="uid://cg2x8umclgbnj" path="res://Scenes/character.tscn" id="3_j2odo"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ltcba"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_ltcba"]
+sky_material = SubResource("ProceduralSkyMaterial_ltcba")
+
+[sub_resource type="Environment" id="Environment_ycpdv"]
+background_mode = 2
+sky = SubResource("Sky_ltcba")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ycpdv"]
+radius = 0.4
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_b1vk5"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_ycpdv"]
+vertices = PackedVector3Array(-19.5, 0.5, -19.5, -19.5, 0.5, 19.5, 19.5, 0.5, 19.5, 19.5, 0.5, -19.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_b1vk5"]
+data = PackedVector3Array(20, 0, 20, -20, 0, 20, 20, 0, -20, -20, 0, 20, -20, 0, -20, 20, 0, -20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j2odo"]
+albedo_color = Color(0.427493, 0.427493, 0.427493, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_171sq"]
+material = SubResource("StandardMaterial3D_j2odo")
+size = Vector2(40, 40)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ycpdv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." groups=["Player"]]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+script = ExtResource("1_ltcba")
+speed = 16.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ycpdv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_b1vk5")
+skeleton = NodePath("../..")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -0.5)
+
+[node name="ColorRect" type="ColorRect" parent="CharacterBody3D"]
+custom_minimum_size = Vector2(5, 5)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.5
+offset_top = -2.5
+offset_right = 2.5
+offset_bottom = 2.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Label" type="Label" parent="CharacterBody3D"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_ycpdv")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_b1vk5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D"]
+mesh = SubResource("PlaneMesh_171sq")
+skeleton = NodePath("../../..")
+
+[node name="BuildManager" parent="." instance=ExtResource("2_ltcba")]
+
+[node name="Node3D" parent="." instance=ExtResource("3_j2odo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.43713, 0.753091, 5.28441)

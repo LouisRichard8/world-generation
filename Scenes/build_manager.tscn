@@ -1,0 +1,147 @@
+[gd_scene load_steps=3 format=3 uid="uid://c41pku425f4uc"]
+
+[ext_resource type="Script" uid="uid://do1mbpjhqicim" path="res://Scripts/build_manager.gd" id="1_j15rf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6juk0"]
+font_size = 24
+
+[node name="BuildManager" type="Node3D"]
+script = ExtResource("1_j15rf")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Mode" type="Label" parent="Control"]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_6juk0")
+
+[node name="Save" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -31.0
+offset_right = -51.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+text = "Save"
+
+[node name="Load" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -46.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+focus_mode = 0
+text = "Load"
+
+[node name="SaveStructureMenu" type="VBoxContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -118.0
+offset_top = -46.5
+offset_right = 118.0
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Control/SaveStructureMenu"]
+layout_mode = 2
+text = "Structure Name :"
+
+[node name="SaveStructureName" type="LineEdit" parent="Control/SaveStructureMenu"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/SaveStructureMenu"]
+layout_mode = 2
+alignment = 2
+
+[node name="Save" type="Button" parent="Control/SaveStructureMenu/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Save"
+
+[node name="CancelSave" type="Button" parent="Control/SaveStructureMenu/HBoxContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="LoadStructureMenu" type="VBoxContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.0
+offset_top = -31.0
+offset_right = 78.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Control/LoadStructureMenu"]
+layout_mode = 2
+text = "Structure Selection :"
+
+[node name="StructureList" type="ItemList" parent="Control/LoadStructureMenu"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/LoadStructureMenu"]
+layout_mode = 2
+alignment = 2
+
+[node name="Load" type="Button" parent="Control/LoadStructureMenu/HBoxContainer"]
+layout_mode = 2
+text = "Load"
+
+[node name="Cancel" type="Button" parent="Control/LoadStructureMenu/HBoxContainer"]
+layout_mode = 2
+text = "Cancel
+"
+
+[node name="BuildBlocks" type="TabContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -300.0
+offset_right = 400.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+tab_alignment = 1
+
+[connection signal="pressed" from="Control/Save" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="Control/Load" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="Control/SaveStructureMenu/HBoxContainer/Save" to="." method="_on_save_structure_button_pressed"]
+[connection signal="pressed" from="Control/SaveStructureMenu/HBoxContainer/CancelSave" to="." method="_on_cancel_save_button_pressed"]
+[connection signal="pressed" from="Control/LoadStructureMenu/HBoxContainer/Load" to="." method="_on_load_structure_button_pressed"]
+[connection signal="pressed" from="Control/LoadStructureMenu/HBoxContainer/Cancel" to="." method="_on_cancel_pressed"]

@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bx7ikkfxqsklc"]
+
+[ext_resource type="Script" uid="uid://npeo477gsxh6" path="res://Scripts/icon_generation.gd" id="1_8og2a"]
+[ext_resource type="ArrayMesh" uid="uid://bbkbvq7owbmhu" path="res://Models/Build/Roof_Straight_Side.obj" id="2_fsasy"]
+
+[node name="IconGenerator" type="Node"]
+script = ExtResource("1_8og2a")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+render_target_update_mode = 4
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewport"]
+mesh = ExtResource("2_fsasy")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport"]
+transform = Transform3D(0.781096, 0.584221, 0.220395, -0.271558, -4.20688e-08, 0.962422, 0.562268, -0.811594, 0.15865, 1.01834, 3.62608, 0.96414)
+light_energy = 10.0
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(0.404471, -0.111202, 0.907765, -7.14285e-09, 0.99258, 0.121592, -0.914551, -0.0491805, 0.40147, 1.611, 0.814229, 0.7129)
+current = true

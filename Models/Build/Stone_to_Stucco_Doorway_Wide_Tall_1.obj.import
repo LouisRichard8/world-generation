@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b2lf1scpfyxqx"
+path="res://.godot/imported/Stone_to_Stucco_Doorway_Wide_Tall_1.obj-c1428a396a762e3055d4bd5449f3c74c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Stone_to_Stucco_Doorway_Wide_Tall_1.obj-c1428a396a762e3055d4bd5449f3c74c.mesh"]
+
+source_file="res://Models/Build/Stone_to_Stucco_Doorway_Wide_Tall_1.obj"
+dest_files=["res://.godot/imported/Stone_to_Stucco_Doorway_Wide_Tall_1.obj-c1428a396a762e3055d4bd5449f3c74c.mesh", "res://.godot/imported/Stone_to_Stucco_Doorway_Wide_Tall_1.obj-c1428a396a762e3055d4bd5449f3c74c.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

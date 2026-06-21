@@ -1,0 +1,43 @@
+{
+	"Roof": {
+		"Straight": [
+			"roof_straight_corner_inner",
+			"roof_straight_corner_outer",
+			"roof_straight_corner_outer_eave",
+			"roof_straight_side",
+			"roof_straight_side_eave",
+			"roof_straight_side_eave_edge",
+			"roof_straight_side_edge"
+		]
+	},
+	"Prop": {
+		"Support": [
+			"stucco_prop_support_angled_large",
+			"stucco_prop_support_angled_small",
+			"stucco_prop_support_beam_1",
+			"stucco_prop_support_pillar_1"
+		]
+	},
+	"Main": {
+		"Doorway": [
+			"stone_to_stucco_doorway_wide_tall_1",
+			"stucco_doorway_wide_tall"
+		],
+		"Window": [
+			"stucco_window_rounded_narrow"
+		],
+		"Floor": [
+			"stone_floor_1",
+			"wood_floor_straight_1"
+		],
+		"Block": [
+			"stucco_block"
+		],
+		"Wall": [
+			"stone_wall_1"
+		],
+		"Step": [
+			"stone_steps"
+		]
+	}
+}
