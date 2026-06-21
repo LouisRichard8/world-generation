@@ -1,7 +1,8 @@
 extends CharacterBody3D
+class_name Player
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
-var speed: float = 64.0
+@export var speed: float = 64.0
 var defaultSpeed: float = 4.0
 var sprintSpeed: float = 25.0
 var jump_speed: float = 11.0
@@ -41,21 +42,30 @@ func _unhandled_input(event) -> void:
 		camera_3d.rotate_x(-event.relative.y * mouse_sensitivity)
 		camera_3d.rotation.x = clampf(camera_3d.rotation.x, -deg_to_rad(70), deg_to_rad(70))
 		player_dir = Vector3(-sin(rotation.y), 0.0, -cos(rotation.y)).normalized()
-	if event.is_action_pressed("up") and is_on_floor() and fly_mode == false:
+	if event.is_action_pressed("up") and is_on_floor() and !fly_mode:
 		velocity.y = jump_speed
-	if event.is_action_pressed("up") and fly_mode == true:
-		velocity.y = speed
+	if event.is_action_pressed("sprint") and !fly_mode:
+		speed = sprintSpeed
+	if event.is_action_released("sprint") and !fly_mode:
+		speed = defaultSpeed
 	if event.is_action_pressed("fly"):
 		fly_mode=!fly_mode
+		speed = defaultSpeed if !fly_mode else 64.0
+	if event.is_action_pressed("up") and fly_mode:
+		velocity.y = speed
 	if event.is_action_released("up"):
 		velocity.y = 0
-	if event.is_action_pressed("down"):
+	if event.is_action_pressed("down") and fly_mode:
 		velocity.y = -speed
-	if event.is_action_released("down"):
+	if event.is_action_released("down") and fly_mode:
 		velocity.y = 0
 	if event.is_action_pressed("zoom"):
 		camera_3d.fov = 20.0
 	if event.is_action_released("zoom"):
 		camera_3d.fov = fov
-	if event.is_action_pressed("exit"):
+	if event.is_action_pressed("mouse"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED else Input.MOUSE_MODE_CAPTURED
+	#if event.is_action_released("mouse"):
+		#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if event.is_action_pressed("exit"):
+		get_tree().quit() 
