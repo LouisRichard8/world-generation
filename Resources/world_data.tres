@@ -1,0 +1,86 @@
+[gd_resource type="Resource" script_class="WorldData" load_steps=27 format=3 uid="uid://nopr0vj12whe"]
+
+[ext_resource type="Script" uid="uid://bdqb5aohk8k2s" path="res://Scripts/biome.gd" id="1_bt1va"]
+[ext_resource type="Resource" uid="uid://v8nc17p8b24j" path="res://Resources/Biomes/biome1.tres" id="2_vnay2"]
+[ext_resource type="Resource" uid="uid://5iu344k8los" path="res://Resources/Biomes/biome2.tres" id="3_7kjps"]
+[ext_resource type="Resource" uid="uid://bcly2nte8o6k5" path="res://Resources/Biomes/biome3.tres" id="4_a2hmu"]
+[ext_resource type="Texture2D" uid="uid://bev8v2wt5egjs" path="res://Resources/Terrain Generation/continentalness.tres" id="5_a2hmu"]
+[ext_resource type="Resource" uid="uid://b4l71nov144b3" path="res://Resources/Biomes/biome4.tres" id="5_f3pji"]
+[ext_resource type="Resource" uid="uid://dumnfkrds7pwa" path="res://Resources/Biomes/biome5.tres" id="6_7kjps"]
+[ext_resource type="Script" uid="uid://b1dj5a4sopvly" path="res://Scripts/biome_manager.gd" id="6_wrb3w"]
+[ext_resource type="Texture2D" uid="uid://bkqda3i5lb1ma" path="res://Resources/Terrain Generation/erosion.tres" id="9_pvcxo"]
+[ext_resource type="ArrayMesh" uid="uid://doaoltg3x47mp" path="res://Resources/Mesh/grass.res" id="10_uwmwu"]
+[ext_resource type="ArrayMesh" uid="uid://b7ot3wi0obj2q" path="res://Resources/Mesh/grassbushred.res" id="11_lh3kb"]
+[ext_resource type="Texture2D" uid="uid://dgavk876e5okf" path="res://Resources/Terrain Generation/humidity.tres" id="12_itfui"]
+[ext_resource type="Texture2D" uid="uid://b5nx6p8q2j33m" path="res://Resources/Terrain Generation/pv.tres" id="13_1au43"]
+[ext_resource type="Script" uid="uid://bmivcxysc8hta" path="res://Scripts/world_data.gd" id="14_jwrqm"]
+[ext_resource type="Texture2D" uid="uid://bou4xc78khrau" path="res://Resources/Terrain Generation/temperature.tres" id="15_lf5df"]
+[ext_resource type="ArrayMesh" uid="uid://58b1umi06bbi" path="res://Resources/Mesh/birch.res" id="16_rs3cb"]
+[ext_resource type="ArrayMesh" uid="uid://b166ygunwebsk" path="res://Resources/Mesh/oak.res" id="17_b0cum"]
+[ext_resource type="ArrayMesh" uid="uid://dvp435evm47q6" path="res://Resources/Mesh/pine.res" id="18_yodkm"]
+
+[sub_resource type="Resource" id="Resource_hhgf8"]
+script = ExtResource("6_wrb3w")
+biomes = Array[ExtResource("1_bt1va")]([ExtResource("2_vnay2"), ExtResource("3_7kjps"), ExtResource("4_a2hmu"), ExtResource("5_f3pji"), ExtResource("6_7kjps")])
+metadata/_custom_type_script = "uid://b1dj5a4sopvly"
+
+[sub_resource type="Curve" id="Curve_bt1va"]
+_limits = [0.0, 1.0, -1.0, 1.0]
+_data = [Vector2(-0.5, 0), 0.0, 0.0, 0, 0, Vector2(0, 0.5), 0.5, 0.5, 0, 0, Vector2(0.5, 0.6), 0.0, 0.0, 0, 0, Vector2(0.8, 0.6), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_jnj20"]
+_limits = [0.0, 1.0, -1.0, 1.0]
+_data = [Vector2(-1, 1), 0.0, 0.0, 0, 0, Vector2(-0.5, 0.5), 0.0, 0.0, 0, 0, Vector2(0, 0.25), 0.0, 0.0, 0, 0, Vector2(0.25, 0.08), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_vnay2"]
+_limits = [0.0, 1.0, -1.0, 1.0]
+_data = [Vector2(-1, 0), 0.0, 0.0, 0, 0, Vector2(-0.3, 0.1), 0.0, 0.0, 0, 0, Vector2(0.2, 0.7), 0.0, 0.0, 0, 0, Vector2(0.7, 0.7), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kn0ld"]
+noise_type = 2
+frequency = 0.0355
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hgpy0"]
+noise = SubResource("FastNoiseLite_kn0ld")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0pcbe"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_axeuq"]
+noise = SubResource("FastNoiseLite_0pcbe")
+
+[resource]
+script = ExtResource("14_jwrqm")
+world_scale = 1.0
+world_max_height = 200.0
+water_level = 50.0
+temperature = ExtResource("15_lf5df")
+humidity = ExtResource("12_itfui")
+biome_manager = SubResource("Resource_hhgf8")
+continentalness = ExtResource("5_a2hmu")
+curve_continentalness = SubResource("Curve_bt1va")
+erosion = ExtResource("9_pvcxo")
+curve_erosion = SubResource("Curve_jnj20")
+pv = ExtResource("13_1au43")
+curve_pv = SubResource("Curve_vnay2")
+generate_vegetation = true
+generate_grass = true
+grass_visibility_distance = 3
+grass_density = 3
+grass_repartition = SubResource("NoiseTexture2D_hgpy0")
+grass = Dictionary[int, Mesh]({
+1: ExtResource("10_uwmwu"),
+2: ExtResource("11_lh3kb")
+})
+generate_tree = true
+tree_visibility_distance = 5
+tree_repartition = SubResource("NoiseTexture2D_axeuq")
+tree = Dictionary[int, Mesh]({
+1: ExtResource("16_rs3cb"),
+2: ExtResource("17_b0cum"),
+3: ExtResource("18_yodkm")
+})
+metadata/_custom_type_script = "uid://bmivcxysc8hta"

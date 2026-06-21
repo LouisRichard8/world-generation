@@ -8,7 +8,7 @@ color = Color(1, 1, 1, 1)
 temperature = 0.3
 humidity = 0.4
 continentalness = 0.8
-erosion = 0.2
+erosion = 0.1
 grass_type = Dictionary[int, float]({
 1: 0.8
 })

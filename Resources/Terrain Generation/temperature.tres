@@ -3,6 +3,7 @@
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tlwt5"]
 noise_type = 3
 frequency = 0.0063
+fractal_octaves = 3
 
 [resource]
 noise = SubResource("FastNoiseLite_tlwt5")

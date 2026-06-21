@@ -6,7 +6,7 @@ class_name World
 @export var chunk_size: int = 16
 @export var view_distance: int = 10
 @export var lod_level_chunk: int = 1
-@export_range(2.0, 64.0, 2.0) var chunk_res: int = 16
+@export var chunk_res: int = 16
 
 @export var world_data: WorldData
 static var chunck_generator: ChunkGenerator
@@ -66,7 +66,7 @@ func toggle_load_chunk(chunk: Chunk, loaded: bool) -> void:
 func erase_chunk(chunk_pos: Vector3) -> void:
 	var chunk_inst := chunks[chunk_pos]
 	
+	chunk_inst.remove_chunk()
+	
 	remove_child(chunk_inst)
 	chunks.erase(chunk_pos)
-	
-	chunk_inst.remove_chunk()

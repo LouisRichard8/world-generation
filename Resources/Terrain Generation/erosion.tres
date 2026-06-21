@@ -2,8 +2,8 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dwbse"]
 noise_type = 3
-seed = 2
-frequency = 0.003
+seed = 1
+frequency = 0.002
 fractal_octaves = 3
 
 [resource]

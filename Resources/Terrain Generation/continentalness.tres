@@ -2,7 +2,7 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_aqk2v"]
 noise_type = 3
-frequency = 0.003
+frequency = 0.0005
 fractal_octaves = 3
 
 [resource]
