@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://tppwhl4nojup"]
 
 [ext_resource type="Script" uid="uid://br04m004d3oy5" path="res://Scripts/world.gd" id="1_f3sb7"]
-[ext_resource type="Resource" uid="uid://nopr0vj12whe" path="res://Resources/world_data.tres" id="2_0pcbe"]
+[ext_resource type="Resource" uid="uid://nopr0vj12whe" path="res://Resources/Terrain Generation/world_data.tres" id="2_0pcbe"]
 [ext_resource type="Script" uid="uid://b2vg5hksr665l" path="res://Scripts/player.gd" id="2_fj7yv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
