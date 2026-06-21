@@ -1,18 +1,72 @@
-[gd_scene load_steps=7 format=3 uid="uid://bcda6ht4rqbp0"]
+[gd_scene load_steps=36 format=3 uid="uid://bcda6ht4rqbp0"]
 
 [ext_resource type="Script" uid="uid://dhmhvgam6ap6c" path="res://Scripts/chunk.gd" id="1_kdh3y"]
-[ext_resource type="Shader" uid="uid://8bmsx7qmpv54" path="res://Shaders/chunk.tres" id="2_eat54"]
+[ext_resource type="Shader" uid="uid://gic0bbd4p7pt" path="res://Shaders/terrain.gdshader" id="2_6qhn4"]
+[ext_resource type="Texture2D" uid="uid://dqum71lqqlhpu" path="res://Textures/Terrain/sand_04_1k/sand_04_ambient_occlusion_1k.png" id="3_maglo"]
 [ext_resource type="Script" uid="uid://dw1pa8uw2p7wu" path="res://Scripts/vegetation_manager.gd" id="3_s0xx0"]
+[ext_resource type="Texture2D" uid="uid://c2welckoe8ytc" path="res://Textures/Terrain/sand_04_1k/sand_04_normal_gl_1k.png" id="3_st2mw"]
+[ext_resource type="Texture2D" uid="uid://e8ybow22h5va" path="res://Textures/Terrain/sand_04_1k/sand_04_color_1k.png" id="3_tlj03"]
+[ext_resource type="Texture2D" uid="uid://c4xtvyc1nbjex" path="res://Textures/Terrain/grass_01_1k/grass_01_color_1k.png" id="4_ixink"]
+[ext_resource type="Texture2D" uid="uid://dqla3a4a3p20y" path="res://Textures/Terrain/grass_01_1k/grass_01_ambient_occlusion_1k.png" id="4_ktcnl"]
+[ext_resource type="Texture2D" uid="uid://cka47m6dmshpu" path="res://Textures/Terrain/grass_01_1k/grass_01_normal_gl_1k.png" id="4_vho74"]
+[ext_resource type="Texture2D" uid="uid://dd32y8qaaglyw" path="res://Textures/Terrain/snow_01_1k/snow_01_ambient_occlusion_1k.png" id="5_4pcv1"]
+[ext_resource type="Texture2D" uid="uid://8fwv0rc8v1ws" path="res://Textures/Terrain/snow_01_1k/snow_01_normal_gl_1k.png" id="5_7e0of"]
+[ext_resource type="Texture2D" uid="uid://d266t5lnkcrjs" path="res://Textures/Terrain/snow_01_1k/snow_01_color_1k.png" id="5_571m2"]
+[ext_resource type="Texture2D" uid="uid://orl45xfogu33" path="res://Textures/Terrain/sand_01_1k/sand_01_normal_gl_1k.png" id="6_52b17"]
+[ext_resource type="Texture2D" uid="uid://x221vtu0rei3" path="res://Textures/Terrain/sand_01_1k/sand_01_ambient_occlusion_1k.png" id="6_lu1gp"]
+[ext_resource type="Texture2D" uid="uid://bt5qelcfu00hh" path="res://Textures/Terrain/sand_01_1k/sand_01_color_1k.png" id="6_tlj03"]
+[ext_resource type="Texture2D" uid="uid://bn5j3vrv41f85" path="res://Textures/Terrain/ground_with_rocks_03_1k/ground_with_rocks_03_ambient_occlussion_1k.png" id="7_ap8u5"]
+[ext_resource type="Texture2D" uid="uid://bp74cl76h1ypn" path="res://Textures/Terrain/ground_with_rocks_03_1k/ground_with_rocks_03_normal_gl_1k.png" id="7_mn7k5"]
+[ext_resource type="Texture2D" uid="uid://c07ce3sow45qs" path="res://Textures/Terrain/ground_with_rocks_03_1k/ground_with_rocks_03_height_1k.png" id="7_u8t4x"]
+[ext_resource type="Texture2D" uid="uid://d1cke087t8kjy" path="res://Textures/Terrain/cliff_rocks_02_1k/cliff_rocks_02_ambientOcclusion_1k.png" id="8_lu1gp"]
+[ext_resource type="Texture2D" uid="uid://yvlf8rsfpvxt" path="res://Textures/Terrain/cliff_rocks_02_1k/cliff_rocks_02_normal_gl_1k.png" id="14_ap8u5"]
+[ext_resource type="Texture2D" uid="uid://bgtp0ey4ul37b" path="res://Textures/Terrain/sand_04_1k/sand_04_roughness_1k.png" id="15_ktv5v"]
+[ext_resource type="Texture2D" uid="uid://h8q7i2yptks0" path="res://Textures/Terrain/grass_01_1k/grass_01_roughness_1k.png" id="16_kol0u"]
+[ext_resource type="Texture2D" uid="uid://df3xji863rdye" path="res://Textures/Terrain/snow_01_1k/snow_01_roughness_1k.png" id="17_kqqls"]
+[ext_resource type="Texture2D" uid="uid://ckjwevkkvgtg" path="res://Textures/Terrain/sand_01_1k/sand_01_roughness_1k.png" id="18_l718q"]
+[ext_resource type="Texture2D" uid="uid://ditcm1x87gaix" path="res://Textures/Terrain/ground_with_rocks_03_1k/ground_with_rocks_03_roughness_1k.png" id="19_rq45f"]
+[ext_resource type="Texture2D" uid="uid://w0yhh8kkcbiv" path="res://Textures/Terrain/cliff_rocks_02_1k/cliff_rocks_02_baseColor_1k.png" id="20_7vmx1"]
+[ext_resource type="Texture2D" uid="uid://cnjl41h013aax" path="res://Textures/Terrain/cliff_rocks_02_1k/cliff_rocks_02_roughness_1k.png" id="20_8yo65"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_ktv5v"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g52pc"]
+noise_type = 3
+fractal_type = 0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tlj03"]
+noise = SubResource("FastNoiseLite_g52pc")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ktv5v"]
+noise_type = 2
+frequency = 0.5
+fractal_type = 0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kol0u"]
+noise = SubResource("FastNoiseLite_ktv5v")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eat54"]
 render_priority = 0
-shader = ExtResource("2_eat54")
+shader = ExtResource("2_6qhn4")
+shader_parameter/uv_scale = 0.25
+shader_parameter/textures = Array[Texture2D]([ExtResource("3_tlj03"), ExtResource("4_ixink"), ExtResource("5_571m2"), ExtResource("6_tlj03"), ExtResource("7_u8t4x"), ExtResource("20_7vmx1")])
+shader_parameter/normals = Array[Texture2D]([ExtResource("3_st2mw"), ExtResource("4_vho74"), ExtResource("5_7e0of"), ExtResource("6_52b17"), ExtResource("7_mn7k5"), ExtResource("14_ap8u5")])
+shader_parameter/ambient_occlusions = Array[Texture2D]([ExtResource("3_maglo"), ExtResource("4_ktcnl"), ExtResource("5_4pcv1"), ExtResource("6_lu1gp"), ExtResource("7_ap8u5"), ExtResource("8_lu1gp")])
+shader_parameter/roughness = Array[Texture2D]([ExtResource("15_ktv5v"), ExtResource("16_kol0u"), ExtResource("17_kqqls"), ExtResource("18_l718q"), ExtResource("19_rq45f"), ExtResource("20_8yo65")])
+shader_parameter/roughness_scale = 1.1
+shader_parameter/blendNoise = SubResource("NoiseTexture2D_tlj03")
+shader_parameter/tile_noise = SubResource("NoiseTexture2D_kol0u")
+shader_parameter/tile_offset = 1.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bp61h"]
-albedo_color = Color(0.267266, 0.261851, 0.999992, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rlc17"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0, 0.420363, 0.770036, 0.862745)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_eat54"]
-material = SubResource("StandardMaterial3D_bp61h")
+material = SubResource("StandardMaterial3D_rlc17")
 size = Vector2(1, 1)
 
 [node name="Chunk" type="StaticBody3D"]

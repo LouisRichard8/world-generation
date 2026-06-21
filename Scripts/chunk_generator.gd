@@ -35,7 +35,6 @@ func generate_chunk(chunk_data: ChunkData, lod_level: int, callback: Callable) -
 	
 	generate_data(surface_tool, chunk_data, lod_level)
 	if chunk_data.generation_canceled:
-		print("cancel chunk")
 		return
 	callback.call_deferred(surface_tool)
 
@@ -48,22 +47,21 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	if !chunk_data.vertexes_generated:
 		chunk_data.vertexes.resize((chunk_res+5)**2)
 		chunk_data.normals.resize((chunk_res+5)**2)
-		chunk_data.colors.resize((chunk_res+5)**2)
+		chunk_data.biomes.resize((chunk_res+5)**2)
 		
 		var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
 		
 		for x in range(chunk_res+5): 
 			for z in range(chunk_res+5):
 				if chunk_data.generation_canceled:
-					print("cancel vert")
 					return
+				
 				var real_x: float = x*stepBetweenPoint - stepBetweenPoint
 				var real_z: float = z*stepBetweenPoint - stepBetweenPoint
+				
 				var index: int = x*(chunk_res+5)+z
 				
-				var noise_data: NoiseData = NoiseData.new(world_data, (real_x+chunk_pos.x)/5.0, (real_z+chunk_pos.z)/5.0)
-				
-				chunk_data.colors[index] = get_biome(noise_data)
+				var noise_data: NoiseData = NoiseData.new(world_data, (real_x+chunk_pos.x)/world_data.world_scale, (real_z+chunk_pos.z)/world_data.world_scale)
 				
 				var height: float = get_height(noise_data)
 					
@@ -74,6 +72,8 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 				
 				if x > 0 and z > 0:
 					calculate_normal(chunk_data, x, z)
+
+				chunk_data.biomes[index] = world_data.biome_manager.get_biome(noise_data)
 		
 		chunk_data.vertexes_generated = true
 
@@ -83,7 +83,6 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 	for x in range(1, size+2):
 		for z in range(1, size+2):
 			if chunk_data.generation_canceled:
-				print("cancel face")
 				return
 			if x > 1 and z > 1:				
 				var xQuad: int = x-2
@@ -116,16 +115,21 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 					var indexC := (x)*(size+3)+z-jump
 					var indexD := (x)*(size+3)+z
 					
-					add_vertex(surface_tool, chunk_data, indexD)
-					add_vertex(surface_tool, chunk_data, indexB)
-					add_vertex(surface_tool, chunk_data, indexA)
-					add_vertex(surface_tool, chunk_data, indexA)
-					add_vertex(surface_tool, chunk_data, indexC)
-					add_vertex(surface_tool, chunk_data, indexD)
+					var texture_idA = chunk_data.biomes[indexA] if (Vector3.UP.dot(chunk_data.normals[indexA].normalized()) > 0.8) else 5
+					var texture_idB = chunk_data.biomes[indexB] if (Vector3.UP.dot(chunk_data.normals[indexB].normalized()) > 0.8) else 5
+					var texture_idC = chunk_data.biomes[indexC] if (Vector3.UP.dot(chunk_data.normals[indexC].normalized()) > 0.8) else 5
+					var texture_idD = chunk_data.biomes[indexD] if (Vector3.UP.dot(chunk_data.normals[indexD].normalized()) > 0.8) else 5
+					
+					add_vertex(surface_tool, chunk_data, indexD, Color(texture_idD, texture_idB, texture_idA, 0.0)/255.0)
+					add_vertex(surface_tool, chunk_data, indexB, Color(texture_idB, texture_idA, texture_idD, 1.0)/255.0)
+					add_vertex(surface_tool, chunk_data, indexA, Color(texture_idA, texture_idD, texture_idB, 2.0)/255.0)
+					add_vertex(surface_tool, chunk_data, indexA, Color(texture_idA, texture_idC, texture_idD, 0.0)/255.0)
+					add_vertex(surface_tool, chunk_data, indexC, Color(texture_idC, texture_idD, texture_idA, 1.0)/255.0)
+					add_vertex(surface_tool, chunk_data, indexD, Color(texture_idD, texture_idA, texture_idC, 2.0)/255.0)
 
-func add_vertex(surface_tool: SurfaceTool, chunk_data: ChunkData, index: int) -> void:
+func add_vertex(surface_tool: SurfaceTool, chunk_data: ChunkData, index: int, color: Color) -> void:
 	surface_tool.set_normal(chunk_data.normals[index])
-	surface_tool.set_color(chunk_data.colors[index])
+	surface_tool.set_color(color)
 	surface_tool.add_vertex(chunk_data.vertexes[index])
 
 func calculate_normal(chunk_data: ChunkData, x: int, z: int) -> void:
@@ -161,28 +165,11 @@ func get_height(noise_data: NoiseData) -> float:
 	
 	return height
 
-func get_biome(noise_data: NoiseData) -> Color:
-	var color: Vector3 = Vector3.ZERO
 	
-	var biomesMatch: Dictionary[Biome, float] = {}
-	var minMatch := pow(3, 10.0)
-	var maxMatch := 0.0
 	
-	for biome in world_data.biomes:
-		var biomeMatch := biome.evaluate(noise_data)
-		biomeMatch = 1 / (biomeMatch + 0.001)
-		biomeMatch = pow(biomeMatch+1, 10.0)
-		minMatch = min(minMatch, biomeMatch)
-		maxMatch = max(maxMatch, biomeMatch)
-		biomesMatch[biome] = biomeMatch
 	
-	for biome in biomesMatch:
-		var biomeMatch := (biomesMatch[biome]-minMatch)/maxMatch
-		color += Vector3(biome.color.r, biome.color.g, biome.color.b)*biomeMatch
 	
-	color = color.normalized()
 	
-	return Color(color.x, color.y, color.z, 1.0)
 
 func generate_grass(chunk_data: ChunkData, vegetation_data: VegetationData, callback: Callable) -> void:
 	var chunk_size := chunk_data.chunk_size

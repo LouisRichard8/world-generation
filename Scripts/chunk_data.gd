@@ -6,9 +6,7 @@ var chunk_res: int
 
 var vertexes: Array[Vector3] = []
 var normals: Array[Vector3] = []
-var colors: Array[Color] = []
-
-var grass: MultiMesh
+var biomes: Array[int] = []
 
 var contain_water: bool = false
 var vertexes_generated: bool = false
@@ -23,4 +21,4 @@ func set_data(pos: Vector3, size: int, res: int) -> void:
 func clearData() -> void:
 	vertexes.clear()
 	normals.clear()
-	colors.clear()
+	biomes.clear()

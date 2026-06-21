@@ -1,11 +1,13 @@
 extends Resource
 class_name WorldData
 
+@export var world_scale: float = 1.0
+@export var world_max_height: float = 200.0
+@export var water_level: float = 50.0 
+
 @export var temperature: NoiseTexture2D
 @export var humidity: NoiseTexture2D
-@export var biomes: Array[Biome] = []
-
-@export var water_level: float = 50.0 
+@export var biome_manager: BiomeManager
 
 @export_group("Continentalness")
 @export var continentalness: NoiseTexture2D

@@ -13,11 +13,12 @@ func _exit_tree() -> void:
 
 func unload_chunk(chunk: Chunk) -> void:
 	var thread: Callable = unload
-	thread.bind(chunk)
+	thread = thread.bind(chunk)
 	thread_ids[chunk.chunk_pos] = WorkerThreadPool.add_task(thread)
 	
 func unload(chunk: Chunk) -> void:
 	chunk.wait_for_thread()
+	chunk.wait_for_vegetation_thread()
 	
 	chunk.chunk_data.clearData()
 	
@@ -25,4 +26,4 @@ func unload(chunk: Chunk) -> void:
 	thread_ids.erase(chunk.chunk_pos)
 	mutex.unlock()
 	
-	chunk.call_deferred("free")
+	chunk.call_deferred("queue_free")
