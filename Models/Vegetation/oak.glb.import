@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://camyijk64kdcw"
-path="res://.godot/imported/grass.glb-9a8470ea5cbd9862eca97795b60eede2.scn"
+uid="uid://bohefhgi47rea"
+path="res://.godot/imported/oak.glb-a48b3bbaa2e5f44dcc919dc310f49cf7.scn"
 
 [deps]
 
-source_file="res://Models/grass.glb"
-dest_files=["res://.godot/imported/grass.glb-9a8470ea5cbd9862eca97795b60eede2.scn"]
+source_file="res://Models/Vegetation/oak.glb"
+dest_files=["res://.godot/imported/oak.glb-a48b3bbaa2e5f44dcc919dc310f49cf7.scn"]
 
 [params]
 
@@ -34,13 +34,13 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"grass_Plane_002": {
+"oak_Cylinder_037": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Resources/grass.res"
+"save_to_file/path": "res://Resources/Mesh/oak.res"
 }
 }
 }

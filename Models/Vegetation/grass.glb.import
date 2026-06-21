@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://d2y6asfjj1ftn"
-path="res://.godot/imported/grassbushred.glb-eac41e5e8c2dc259f1bb00d7b0ccbe63.scn"
+uid="uid://camyijk64kdcw"
+path="res://.godot/imported/grass.glb-69eaf888fa1cc39f0833722639fa6dba.scn"
 
 [deps]
 
-source_file="res://Models/grassbushred.glb"
-dest_files=["res://.godot/imported/grassbushred.glb-eac41e5e8c2dc259f1bb00d7b0ccbe63.scn"]
+source_file="res://Models/Vegetation/grass.glb"
+dest_files=["res://.godot/imported/grass.glb-69eaf888fa1cc39f0833722639fa6dba.scn"]
 
 [params]
 
@@ -34,13 +34,13 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"grassbushred_Plane_006": {
+"grass_Plane_002": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Resources/Mesh/grassbushred.res"
+"save_to_file/path": "res://Resources/grass.res"
 }
 }
 }

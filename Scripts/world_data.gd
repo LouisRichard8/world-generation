@@ -20,6 +20,7 @@ class_name WorldData
 @export var curve_pv: Curve
 
 @export_group("Vegetation")
+@export var generate_vegetation: bool = true
 @export_subgroup("Grass")
 @export var generate_grass: bool = true
 @export var grass_visibility_distance: int = 3

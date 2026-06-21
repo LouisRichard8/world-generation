@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c1xr5hilyq4ya"
-path="res://.godot/imported/pine.glb-e3195b46012a58636974bc1466cb90f6.scn"
+uid="uid://c6h2aqbu4rftl"
+path="res://.godot/imported/birch.glb-cb3e0b71713372b0552733ccd18dd874.scn"
 
 [deps]
 
-source_file="res://Models/pine.glb"
-dest_files=["res://.godot/imported/pine.glb-e3195b46012a58636974bc1466cb90f6.scn"]
+source_file="res://Models/Vegetation/birch.glb"
+dest_files=["res://.godot/imported/birch.glb-cb3e0b71713372b0552733ccd18dd874.scn"]
 
 [params]
 
@@ -34,13 +34,13 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"pine_Cylinder_025": {
+"birch_Cylinder_049": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Resources/Mesh/pine.res"
+"save_to_file/path": "res://Resources/Mesh/birch.res"
 }
 }
 }

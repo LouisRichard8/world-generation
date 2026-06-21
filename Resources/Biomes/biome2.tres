@@ -9,4 +9,12 @@ temperature = 0.5
 humidity = 0.5
 continentalness = 0.5
 erosion = 0.5
+grass_type = Dictionary[int, float]({
+1: 0.8,
+2: 0.2
+})
+trees_type = Dictionary[int, float]({
+1: 0.8,
+2: 0.2
+})
 metadata/_custom_type_script = "uid://bdqb5aohk8k2s"

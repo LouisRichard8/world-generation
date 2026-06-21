@@ -85,12 +85,7 @@ func generate_data(surface_tool: SurfaceTool, chunk_data: ChunkData, lod_level: 
 			if chunk_data.generation_canceled:
 				print("cancel face")
 				return
-			if x > 1 and z > 1:
-				#if Vector3.UP.dot(chunk_data.normals[x*(size+3)+z]) > 0.8 and x%2 == 0 and z%2 == 0 and chunk_data.vertexes[x*(size+3)+z].y > world_data.water_level+5.0:
-					#var tree = tree_scn.instantiate()
-					#tree.position = vertexes[x*(size+3)+z] + Vector3(randf_range(0.0,0.7), 0.0, randf_range(0.0,0.7))
-					#vegetation.call_deferred("add_child", tree)
-				
+			if x > 1 and z > 1:				
 				var xQuad: int = x-2
 				var zQuad: int = z-2
 				var isMainVertex: bool = (xQuad % step == 0 and zQuad % step == 0) and (x > 1 or x < size + 1 or z > 1 or z < size + 1)
@@ -190,69 +185,88 @@ func get_biome(noise_data: NoiseData) -> Color:
 	return Color(color.x, color.y, color.z, 1.0)
 
 func generate_grass(chunk_data: ChunkData, vegetation_data: VegetationData, callback: Callable) -> void:
-	var grass_transforms: Dictionary[GrassType, Array] = {}
-	var trees_transforms: Dictionary[TreeType, Array] = {}
-	
 	var chunk_size := chunk_data.chunk_size
-	var chunk_res := chunk_data.chunk_res
 	
-	var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
-	var stepGrass: float = stepBetweenPoint/world_data.grass_density
-	
-	for x in range(3, chunk_res+5): 
-		for z in range(3, chunk_res+5):
-			if chunk_data.generation_canceled:
-				return
-			var indexA := (x-2)*(chunk_res+5)+z-2
-			var indexB := (x-2)*(chunk_res+5)+z-1
-			var indexC := (x-1)*(chunk_res+5)+z-2
-			var indexD := (x-1)*(chunk_res+5)+z-1
-			var AB_vert := chunk_data.vertexes[indexB]-chunk_data.vertexes[indexA]
-			var BD_vert := chunk_data.vertexes[indexD]-chunk_data.vertexes[indexB]
-			var CD_vert := chunk_data.vertexes[indexD]-chunk_data.vertexes[indexC]
-			var AC_vert := chunk_data.vertexes[indexC]-chunk_data.vertexes[indexA]
-			var AB_norm := chunk_data.normals[indexB]-chunk_data.normals[indexA]
-			var BD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexB]
-			var CD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexC]
-			var AC_norm := chunk_data.normals[indexC]-chunk_data.normals[indexA]
-			
-			if world_data.generate_tree and x%2==0 and z%2==0:
-				var vertex: Vector3 = chunk_data.vertexes[indexD]
-				var normal: Vector3 = chunk_data.normals[indexD]
-				var tree_type: TreeType = get_tree_type(vertex.x+chunk_data.chunk_pos.x, vertex.z+chunk_data.chunk_pos.z)
-				if tree_type != TreeType.NONE:
-					if Vector3.UP.dot(normal.normalized()) > 0.8 and vertex.y > world_data.water_level+5.0:
-						if !trees_transforms.has(tree_type):
-							trees_transforms[tree_type] = []
-						trees_transforms[tree_type].append(get_transform(vertex, 5.0, 0.7, 1.0))
+	if !vegetation_data.generated:
+		var chunk_res := chunk_data.chunk_res
+		
+		var stepBetweenPoint: float = (1.0/(float(chunk_res+2)/chunk_size))
+		var stepGrass: float = stepBetweenPoint/world_data.grass_density
+		
+		for x in range(3, chunk_res+5): 
+			for z in range(3, chunk_res+5):
+				if chunk_data.generation_canceled:
+					return
+				var indexA := (x-2)*(chunk_res+5)+z-2
+				var indexB := (x-2)*(chunk_res+5)+z-1
+				var indexC := (x-1)*(chunk_res+5)+z-2
+				var indexD := (x-1)*(chunk_res+5)+z-1
+				var AB_vert := chunk_data.vertexes[indexB]-chunk_data.vertexes[indexA]
+				var BD_vert := chunk_data.vertexes[indexD]-chunk_data.vertexes[indexB]
+				var CD_vert := chunk_data.vertexes[indexD]-chunk_data.vertexes[indexC]
+				var AC_vert := chunk_data.vertexes[indexC]-chunk_data.vertexes[indexA]
+				var AB_norm := chunk_data.normals[indexB]-chunk_data.normals[indexA]
+				var BD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexB]
+				var CD_norm := chunk_data.normals[indexD]-chunk_data.normals[indexC]
+				var AC_norm := chunk_data.normals[indexC]-chunk_data.normals[indexA]
+				
+				var biomeA := world_data.biome_manager.biomes[chunk_data.biomes[indexA]]
+				var biomeB := world_data.biome_manager.biomes[chunk_data.biomes[indexB]]
+				var biomeC := world_data.biome_manager.biomes[chunk_data.biomes[indexC]]
+				var biomeD := world_data.biome_manager.biomes[chunk_data.biomes[indexD]]
+				
+				if world_data.generate_tree and x%2==0 and z%2==0:
+					var vertex: Vector3 = chunk_data.vertexes[indexD]
+					var normal: Vector3 = chunk_data.normals[indexD]
+					var tree_type: TreeType = get_tree_type(biomeD, vertex.x+chunk_data.chunk_pos.x, vertex.z+chunk_data.chunk_pos.z)
+					if tree_type != TreeType.NONE:
+						if Vector3.UP.dot(normal.normalized()) > 0.8 and vertex.y > world_data.water_level+5.0:
+							if !vegetation_data.trees_transforms.has(tree_type):
+								vegetation_data.trees_transforms[tree_type] = []
+							vegetation_data.trees_transforms[tree_type].append(get_transform(vertex, 5.0, 0.7, 1.0))
+				
+				if world_data.generate_grass:
+					for i in range(world_data.grass_density):
+						for j in range(world_data.grass_density):
+							if chunk_data.generation_canceled:
+								return
+							var pos: Vector3 = chunk_data.vertexes[indexA]
+							var normal: Vector3 = chunk_data.normals[indexA]
 							
-			for i in range(world_data.grass_density):
-				for j in range(world_data.grass_density):
-					if chunk_data.generation_canceled:
-						return
-					var pos: Vector3 = chunk_data.vertexes[indexA]
-					var normal: Vector3 = chunk_data.normals[indexA]
-					
-					var x_percent := float(i+stepGrass/2.0)/float(world_data.grass_density)
-					var z_percent := float(j+stepGrass/2.0)/float(world_data.grass_density)
-					
-					if j >= i:
-						pos += AB_vert*x_percent + BD_vert*z_percent
-						normal += AB_norm*x_percent + BD_norm*z_percent
-					else:
-						pos += CD_vert*x_percent + AC_vert*z_percent
-						normal += CD_norm*x_percent + AC_norm*z_percent
-					
-					var grass_type: GrassType = get_grass_type(pos.x+chunk_data.chunk_pos.x, pos.z+chunk_data.chunk_pos.z)
-					if grass_type != GrassType.NONE:
-						if !grass_transforms.has(grass_type):
-							grass_transforms[grass_type] = []
-						if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
-							grass_transforms[grass_type].append(get_transform(pos, stepGrass, 0.3, 0.5)) 
+							var x_percent := float(i+stepGrass/2.0)/float(world_data.grass_density)
+							var z_percent := float(j+stepGrass/2.0)/float(world_data.grass_density)
+							
+							var biome: Biome
+							if x_percent < 0.5:
+								if z_percent < 0.5:
+									biome = biomeA
+								else:
+									biome = biomeC
+							else:
+								if z_percent < 0.5:
+									biome = biomeB
+								else:
+									biome = biomeD
+									
+							if j >= i:
+								pos += AB_vert*x_percent + BD_vert*z_percent
+								normal += AB_norm*x_percent + BD_norm*z_percent
+							else:
+								pos += CD_vert*x_percent + AC_vert*z_percent
+								normal += CD_norm*x_percent + AC_norm*z_percent
+							
+							var grass_type: GrassType = get_grass_type(biome, pos.x+chunk_data.chunk_pos.x, pos.z+chunk_data.chunk_pos.z)
+							if grass_type != GrassType.NONE:
+								if !vegetation_data.grass_transforms.has(grass_type):
+									vegetation_data.grass_transforms[grass_type] = []
+								if Vector3.UP.dot(normal.normalized()) > 0.8 and pos.y > world_data.water_level+5.0:
+									vegetation_data.grass_transforms[grass_type].append(get_transform(pos, stepGrass, 0.3, 0.5)) 
+		
+		vegetation_data.generated = true
 
-	for type: GrassType in grass_transforms:
+	for type: GrassType in vegetation_data.grass_transforms:
 		var multimesh = create_multimesh(world_data.grass[type])
-		var grass_array: Array = grass_transforms[type]
+		var grass_array: Array = vegetation_data.grass_transforms[type]
 		var size: int = grass_array.size()
 		multimesh.instance_count = size
 		for i in range(size):
@@ -262,9 +276,9 @@ func generate_grass(chunk_data: ChunkData, vegetation_data: VegetationData, call
 		multimesh_instance.visibility_range_end = world_data.grass_visibility_distance*chunk_size
 		vegetation_data.grass.append(multimesh_instance)
 	
-	for type: TreeType in trees_transforms:
+	for type: TreeType in vegetation_data.trees_transforms:
 		var multimesh = create_multimesh(world_data.tree[type])
-		var trees_array: Array = trees_transforms[type]
+		var trees_array: Array = vegetation_data.trees_transforms[type]
 		var size: int = trees_array.size()
 		multimesh.instance_count = size
 		for i in range(size):
@@ -274,33 +288,30 @@ func generate_grass(chunk_data: ChunkData, vegetation_data: VegetationData, call
 		multimesh_instance.visibility_range_end = world_data.tree_visibility_distance*chunk_size
 		vegetation_data.trees.append(multimesh_instance)
 	
-	vegetation_data.generated = true
 	
 	callback.call_deferred()
 
-func get_grass_type(x: float, z: float) -> GrassType:
+func get_grass_type(biome:Biome, x: float, z: float) -> GrassType:
 	var grass_type: GrassType = GrassType.NONE
 	var grass_repartition: float = world_data.grass_repartition.noise.get_noise_2d(x,z)
 	
 	if grass_repartition > -0.5 and randf_range(-0.5, -0.3) < grass_repartition:
 		var weirdness: float = randf_range(0.0, 1.0)
-		if weirdness > 0.8:
-			grass_type = GrassType.GRASS_RED_BUSH
-		else:
-			grass_type = GrassType.GRASS
+		for type in biome.grass_type:
+			if 1.0 - biome.grass_type[type] < weirdness:
+				grass_type = type
 		
 	return grass_type
 
-func get_tree_type(x: float, z: float) -> TreeType:
+func get_tree_type(biome: Biome, x: float, z: float) -> TreeType:
 	var tree_type: TreeType = TreeType.NONE
 	var tree_repartition: float = world_data.tree_repartition.noise.get_noise_2d(x,z)
 	
 	if tree_repartition > 0.0 and randf_range(0.0, 0.3) < tree_repartition:
 		var weirdness: float = randf_range(0.0, 1.0)
-		if weirdness > 0.8:
-			tree_type = TreeType.OAK
-		else:
-			tree_type = TreeType.BIRCH
+		for type in biome.trees_type:
+			if 1.0 - biome.trees_type[type] < weirdness:
+				tree_type = type
 		
 	return tree_type
 

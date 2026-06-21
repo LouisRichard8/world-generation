@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bohefhgi47rea"
-path="res://.godot/imported/oak.glb-e2a61f2ca11cb73f2454d46212ab43fd.scn"
+uid="uid://c1xr5hilyq4ya"
+path="res://.godot/imported/pine.glb-0eb0b69f8b22a2dcea5c689c60c68939.scn"
 
 [deps]
 
-source_file="res://Models/oak.glb"
-dest_files=["res://.godot/imported/oak.glb-e2a61f2ca11cb73f2454d46212ab43fd.scn"]
+source_file="res://Models/Vegetation/pine.glb"
+dest_files=["res://.godot/imported/pine.glb-0eb0b69f8b22a2dcea5c689c60c68939.scn"]
 
 [params]
 
@@ -34,13 +34,13 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"oak_Cylinder_037": {
+"pine_Cylinder_025": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Resources/Mesh/oak.res"
+"save_to_file/path": "res://Resources/Mesh/pine.res"
 }
 }
 }

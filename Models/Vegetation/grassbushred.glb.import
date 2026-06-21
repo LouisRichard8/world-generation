@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c6h2aqbu4rftl"
-path="res://.godot/imported/birch.glb-e89b6fd14a614c45b0b8c296c0533b22.scn"
+uid="uid://d2y6asfjj1ftn"
+path="res://.godot/imported/grassbushred.glb-28dbfc88b8bb02b9363f46c08e1c8fd6.scn"
 
 [deps]
 
-source_file="res://Models/birch.glb"
-dest_files=["res://.godot/imported/birch.glb-e89b6fd14a614c45b0b8c296c0533b22.scn"]
+source_file="res://Models/Vegetation/grassbushred.glb"
+dest_files=["res://.godot/imported/grassbushred.glb-28dbfc88b8bb02b9363f46c08e1c8fd6.scn"]
 
 [params]
 
@@ -34,13 +34,13 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"birch_Cylinder_049": {
+"grassbushred_Plane_006": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Resources/Mesh/birch.res"
+"save_to_file/path": "res://Resources/Mesh/grassbushred.res"
 }
 }
 }
